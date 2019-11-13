@@ -1,0 +1,266 @@
+import React, { Component } from "react";
+import axios from "axios";
+
+class EditUser extends React.Component {
+  constructor(props) {
+    super(props);
+    this.onGenderChanged = this.onGenderChanged.bind(this);
+    this.onFirstNameChanged = this.onFirstNameChanged.bind(this);
+    this.onLastNameChanged = this.onLastNameChanged.bind(this);
+    this.onContactChanged = this.onContactChanged.bind(this);
+    this.onAadharChanged = this.onAadharChanged.bind(this);
+    this.onAddressChanged = this.onAddressChanged.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.setUserProperties = this.setUserProperties.bind(this);
+
+    this.state = {
+      firstName: "",
+      lastName: "",
+      gender: "",
+      username: "",
+      password: "",
+      contact: "",
+      aadhar: "",
+      address: ""
+    };
+  }
+  setUserProperties(userobj) {
+    this.setState({
+      firstName: userobj.firstName,
+      lastName: userobj.lastName,
+      gender: userobj.gender,
+      username: userobj.username,
+      password: userobj.password,
+      contact: userobj.contact,
+      aadhar: userobj.aadhar,
+      address: userobj.address
+    });
+  }
+  componentDidMount() {
+    fetch("/api/users/" + this.props.match.params.id)
+      .then(res => res.json())
+      .then(json => {
+        this.setState({
+          firstName: json.firstName,
+          lastName: json.lastName,
+          gender: json.gender,
+          username: json.username,
+          password: json.password,
+          contact: json.contact,
+          aadhar: json.aadhar,
+          address: json.aadhar
+        });
+      });
+  }
+  onSubmit(e) {
+    e.preventDefault();
+    let self = this;
+    const obj = {
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      gender: this.state.gender,
+      username: this.state.username,
+      password: this.state.password,
+      contact: this.state.contact,
+      aadhar: this.state.aadhar,
+      address: this.state.aadhar
+    };
+
+    fetch("/api/users/" + this.props.match.params.id, {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      },
+      body: JSON.stringify({
+        user: obj
+      })
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(json => {
+        console.log(json);
+        self.setUserProperties(json);
+      })
+      .catch(e => console.log(e));
+
+    //this.props.history.push("/users");
+  }
+  onAddressChanged(e) {
+    this.setState({
+      address: e.target.value
+    });
+  }
+  onAadharChanged(e) {
+    this.setState({
+      aadhar: e.target.value
+    });
+  }
+  onGenderChanged(e) {
+    this.setState({
+      gender: e.target.value
+    });
+  }
+  onFirstNameChanged(e) {
+    this.setState({
+      firstName: e.target.value
+    });
+  }
+  onLastNameChanged(e) {
+    this.setState({
+      lastName: e.target.value
+    });
+  }
+  onContactChanged(e) {
+    this.setState({
+      contact: e.target.value
+    });
+  }
+  render() {
+    return (
+      <div className="container mt-5">
+        <form onSubmit={this.onSubmit}>
+          <div className="row">
+            <div className="col-sm-6">
+              <div className="form-group">
+                <label htmlFor="txt-firstname"> First Name</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  name="txt-firstname"
+                  id="txt-firstname"
+                  value={this.state.firstName}
+                  onChange={this.onFirstNameChanged}
+                />
+              </div>
+            </div>
+            <div className="col-sm-6">
+              <div className="form-group">
+                <label htmlFor="txt-lastname"> Last Name</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  name="txt-lastname"
+                  id="txt-lastname"
+                  value={this.state.lastName}
+                  onChange={this.onLastNameChanged}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-6">
+              <div className="form-group">
+                <label htmlFor="txt-contact">Contact</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  name="txt-contact"
+                  id="txt-contact"
+                  value={this.state.contact}
+                  onChange={this.onContactChanged}
+                />
+              </div>
+            </div>
+            <div className="col-sm-6">
+              <div className="form-group">
+                <label htmlFor="txt-aadhar">Aadhar</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  name="txt-aadhar"
+                  id="txt-aadhar"
+                  value={this.state.aadhar}
+                  onChange={this.onAadharChanged}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-6">
+              <div className="form-group">
+                <label htmlFor="txt-username">Username</label>
+                <input
+                  disabled
+                  className="form-control"
+                  type="text"
+                  name="txt-username"
+                  id="txt-username"
+                  value={this.state.username}
+                />
+              </div>
+            </div>
+            <div className="col-sm-6">
+              <div className="form-group">
+                <label htmlFor="txt-password">Password</label>
+                <input
+                  disabled
+                  className="form-control"
+                  type="password"
+                  name="txt-password"
+                  id="txt-password"
+                  value={this.state.password}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-6">
+              <div className="form-group">
+                <label htmlFor="txt-address">Address</label>
+                <textarea
+                  className="form-control"
+                  name="txt-address"
+                  id="txt-address"
+                  cols="16"
+                  rows="5"
+                  value={this.state.address}
+                  onChange={this.onAddressChanged}
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-6">
+              <div className="form-group">
+                {/* <legend class="col-form-label pt-0"> Gender </legend> */}
+                <div className="form-check form-check-inline">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="gender"
+                    id="rdo-male"
+                    value="Male"
+                    checked={this.state.gender === "Male"}
+                    onChange={this.onGenderChanged}
+                  />
+                  <label className="form-check-label" htmlFor="rdo-male">
+                    Male
+                  </label>
+                </div>
+                <div className="form-check form-check-inline">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="gender"
+                    id="rdo-female"
+                    value="Female"
+                    checked={this.state.gender === "Female"}
+                    onChange={this.onGenderChanged}
+                  />
+                  <label className="form-check-label" htmlFor="rdo-female">
+                    Female
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button className="btn btn-primary" type="submit">
+            SUBMIT
+          </button>
+        </form>
+      </div>
+    );
+  }
+}
+export default EditUser;
