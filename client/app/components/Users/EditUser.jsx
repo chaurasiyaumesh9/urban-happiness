@@ -4,7 +4,7 @@ import axios from "axios";
 
 class EditUser extends React.Component {
   constructor(props) {
-    //console.log("EDIT USERS :", props);
+    //   console.log("EDIT USERS :", props);
     super(props);
     this.onGenderChanged = this.onGenderChanged.bind(this);
     this.onFirstNameChanged = this.onFirstNameChanged.bind(this);
@@ -89,11 +89,11 @@ class EditUser extends React.Component {
       })
       .then(json => {
         this.setUserProperties(json);
-        // this.setNotificationState({
-        //   type: "success",
-        //   message: "Record updated successfully!!",
-        //   show: true
-        // });
+        this.props.setNotification({
+          type: "success",
+          message: "Record updated successfully!!",
+          show: true
+        });
       })
       .catch(e => console.log(e));
   }
