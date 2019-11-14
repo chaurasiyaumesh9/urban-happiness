@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import Notifications from "../Notifications/Notifications";
+// import Notifications from "../Notifications/Notifications";
 import axios from "axios";
 
 class EditUser extends React.Component {
   constructor(props) {
+    //console.log("EDIT USERS :", props);
     super(props);
     this.onGenderChanged = this.onGenderChanged.bind(this);
     this.onFirstNameChanged = this.onFirstNameChanged.bind(this);
@@ -15,7 +16,7 @@ class EditUser extends React.Component {
     this.onPasswordChanged = this.onPasswordChanged.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.setUserProperties = this.setUserProperties.bind(this);
-    this.setNotificationState = this.setNotificationState.bind(this);
+    // this.setNotificationState = this.setNotificationState.bind(this);
 
     this.state = {
       firstName: "",
@@ -88,11 +89,11 @@ class EditUser extends React.Component {
       })
       .then(json => {
         this.setUserProperties(json);
-        this.setNotificationState({
-          type: "success",
-          message: "Record updated successfully!!",
-          show: true
-        });
+        // this.setNotificationState({
+        //   type: "success",
+        //   message: "Record updated successfully!!",
+        //   show: true
+        // });
       })
       .catch(e => console.log(e));
   }
@@ -136,24 +137,24 @@ class EditUser extends React.Component {
       password: e.target.value
     });
   }
-  setNotificationState(alertObj) {
-    this.setState({
-      notification: {
-        type: alertObj.type,
-        message: alertObj.message,
-        show: alertObj.show
-      }
-    });
-  }
+  // setNotificationState(alertObj) {
+  //   this.setState({
+  //     notification: {
+  //       type: alertObj.type,
+  //       message: alertObj.message,
+  //       show: alertObj.show
+  //     }
+  //   });
+  // }
   render() {
     return (
       <div className="container mt-5">
-        {this.state.notification.show && (
+        {/* {this.state.notification.show && (
           <Notifications
             closeHandler={this.setNotificationState}
             notification={this.state.notification}
           />
-        )}
+        )} */}
         <form onSubmit={this.onSubmit}>
           <div className="row">
             <div className="col-sm-6">
