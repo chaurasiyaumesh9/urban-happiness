@@ -5,11 +5,28 @@ import "whatwg-fetch";
 class UsersList extends React.Component {
   constructor(props) {
     super(props);
+    this.deleteUser = this.deleteUser.bind(this);
     this.state = {
       users: []
     };
   }
-  componentDidMount() {
+  deleteUser(userid) {
+    if (!userid) return;
+    fetch("/api/users/" + userid, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(json => {
+        this.fetchUsersList();
+      })
+      .catch(e => console.log(e));
+  }
+  fetchUsersList() {
     fetch("/api/users")
       .then(res => res.json())
       .then(json => {
@@ -17,6 +34,9 @@ class UsersList extends React.Component {
           users: json
         });
       });
+  }
+  componentDidMount() {
+    this.fetchUsersList();
   }
 
   newUser() {
@@ -36,43 +56,71 @@ class UsersList extends React.Component {
     const userjsx = this.state.users.map((user, i) => {
       return (
         <tr key={i}>
-          <th scope="row">{i + 1}</th>
-          <td>
+          <th className="text-right" scope="row">
+            {i + 1}
+          </th>
+          <td className="text-left">
             {user.firstName} {user.lastName}
           </td>
-          <td>{user.contact}</td>
-          <td>{user.username}</td>
-          <td>
-            <Link className="edit-user" to={`/users/${user._id}`}>
-              <i className="fas fa-user-edit"></i>
+          <td className="text-left">{user.contact}</td>
+          <td className="text-left">{user.username}</td>
+          <td className="text-left">{user.address}</td>
+          <td className="text-right">
+            <Link
+              className="btn btn-md btn-primary edit-user mr-1"
+              to={`/users/${user._id}`}
+            >
+              <i className="fas fa-user-edit"></i> EDIT
             </Link>
+
+            <button
+              onClick={i => this.deleteUser(user._id)}
+              className="btn btn-md btn-danger delete-user"
+            >
+              <i className="fas fa-trash"></i> DELETE
+            </button>
           </td>
         </tr>
       );
     });
     return (
       <div className="container">
-        <div className="jumbotron text-center">
-          <h3>
+        {/* <div className="jumbotron text-center">
+          <h4>
             <i className="fas fa-users-cog"></i> MANAGE USERS
-          </h3>
-        </div>
-
+          </h4>
+        </div> */}
         <div className="table-responsive">
           <table className="table table-striped">
             <thead>
               <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Contact</th>
-                <th scope="col">Username</th>
-                <th scope="col"> </th>
+                <th className="text-right" scope="col">
+                  #
+                </th>
+                <th className="text-left" scope="col">
+                  NAME
+                </th>
+                <th className="text-left" scope="col">
+                  CONTACT
+                </th>
+                <th className="text-left" scope="col">
+                  USERNAME
+                </th>
+                <th className="text-left" scope="col">
+                  ADDRESS
+                </th>
+                <th className="text-right" scope="col">
+                  {" "}
+                  ACTION(S){" "}
+                </th>
               </tr>
             </thead>
             <tbody>{userjsx}</tbody>
           </table>
         </div>
-        <button className="btn btn-primary">New User</button>
+        <Link className="btn btn-primary" to="/users/create">
+          <i className="fas fa-plus"></i> New User
+        </Link>
       </div>
     );
   }

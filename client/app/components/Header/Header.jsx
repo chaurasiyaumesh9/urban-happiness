@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const Header = () => (
   <header>
@@ -26,29 +26,36 @@ const Header = () => (
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item">
-              <Link className="nav-link active" to="/">
+              <NavLink
+                exact
+                activeClassName="active"
+                className="nav-link"
+                to="/"
+              >
                 <i className="fas fa-home"></i>{" "}
                 <span className="sr-only">(current)</span>
-              </Link>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/users">
+              <NavLink
+                activeClassName="active"
+                className="nav-link"
+                to="/users"
+              >
                 {" "}
                 USERS{" "}
-              </Link>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/categories">
+              <NavLink
+                activeClassName="active"
+                className="nav-link"
+                to="/categories"
+              >
                 {" "}
                 CATEGORIES{" "}
-              </Link>
+              </NavLink>
             </li>
-            {/* <li className="nav-item">
-              <Link className="nav-link" to="/counter">
-                {" "}
-                CAUNTER{" "}
-              </Link>
-            </li> */}
           </ul>
         </div>
       </nav>

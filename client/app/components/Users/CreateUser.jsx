@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import Notifications from "../Notifications/Notifications";
 import axios from "axios";
 
-class EditUser extends React.Component {
+class CreateUser extends React.Component {
   constructor(props) {
     super(props);
     this.onGenderChanged = this.onGenderChanged.bind(this);
@@ -15,7 +14,6 @@ class EditUser extends React.Component {
     this.onPasswordChanged = this.onPasswordChanged.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.setUserProperties = this.setUserProperties.bind(this);
-    this.setNotificationState = this.setNotificationState.bind(this);
 
     this.state = {
       firstName: "",
@@ -25,12 +23,7 @@ class EditUser extends React.Component {
       password: "",
       contact: "",
       aadhar: "",
-      address: "",
-      notification: {
-        type: null,
-        message: "",
-        show: false
-      }
+      address: ""
     };
   }
   setUserProperties(userobj) {
@@ -45,24 +38,10 @@ class EditUser extends React.Component {
       address: userobj.address
     });
   }
-  componentDidMount() {
-    fetch("/api/users/" + this.props.match.params.id)
-      .then(res => res.json())
-      .then(json => {
-        this.setState({
-          firstName: json.firstName,
-          lastName: json.lastName,
-          gender: json.gender,
-          username: json.username,
-          password: json.password,
-          contact: json.contact,
-          aadhar: json.aadhar,
-          address: json.aadhar
-        });
-      });
-  }
+
   onSubmit(e) {
     e.preventDefault();
+    let self = this;
     const obj = {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
@@ -74,8 +53,8 @@ class EditUser extends React.Component {
       address: this.state.aadhar
     };
 
-    fetch("/api/users/" + this.props.match.params.id, {
-      method: "PUT",
+    fetch("/api/users/", {
+      method: "POST",
       headers: {
         "Content-type": "application/json; charset=UTF-8"
       },
@@ -87,14 +66,20 @@ class EditUser extends React.Component {
         return response.json();
       })
       .then(json => {
-        this.setUserProperties(json);
-        this.setNotificationState({
-          type: "success",
-          message: "Record updated successfully!!",
-          show: true
+        this.setUserProperties({
+          firstName: "",
+          lastName: "",
+          gender: "",
+          username: "",
+          password: "",
+          contact: "",
+          aadhar: "",
+          address: ""
         });
       })
       .catch(e => console.log(e));
+
+    //this.props.history.push("/users");
   }
   onAddressChanged(e) {
     this.setState({
@@ -136,24 +121,10 @@ class EditUser extends React.Component {
       password: e.target.value
     });
   }
-  setNotificationState(alertObj) {
-    this.setState({
-      notification: {
-        type: alertObj.type,
-        message: alertObj.message,
-        show: alertObj.show
-      }
-    });
-  }
+
   render() {
     return (
       <div className="container mt-5">
-        {this.state.notification.show && (
-          <Notifications
-            closeHandler={this.setNotificationState}
-            notification={this.state.notification}
-          />
-        )}
         <form onSubmit={this.onSubmit}>
           <div className="row">
             <div className="col-sm-6">
@@ -192,8 +163,8 @@ class EditUser extends React.Component {
                   type="text"
                   name="txt-contact"
                   id="txt-contact"
-                  maxLength="11"
                   value={this.state.contact}
+                  maxLength="11"
                   onChange={this.onContactChanged}
                 />
               </div>
@@ -248,9 +219,9 @@ class EditUser extends React.Component {
                   className="form-control"
                   name="txt-address"
                   id="txt-address"
+                  value={this.state.address}
                   cols="16"
                   rows="5"
-                  value={this.state.address}
                   onChange={this.onAddressChanged}
                 ></textarea>
               </div>
@@ -259,7 +230,6 @@ class EditUser extends React.Component {
           <div className="row">
             <div className="col-sm-6">
               <div className="form-group">
-                {/* <legend class="col-form-label pt-0"> Gender </legend> */}
                 <div className="form-check form-check-inline">
                   <input
                     className="form-check-input"
@@ -298,11 +268,11 @@ class EditUser extends React.Component {
             className="btn btn-primary"
             onClick={() => this.props.history.push("/users")}
           >
-            <i className="fas fa-chevron-left"></i> GO BACK
+            <i className="fas fa-chevron-left"></i>GO BACK
           </button>
         </form>
       </div>
     );
   }
 }
-export default EditUser;
+export default CreateUser;

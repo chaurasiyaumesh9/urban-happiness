@@ -1,18 +1,24 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 
-import Header from '../Header/Header';
-import Footer from '../Footer/Footer';
+import Header from "../Header/Header";
+import Footer from "../Footer/Footer";
 
-const App = ({ children }) => (
-  <>
-    <Header />
+class App extends Component {
+  constructor(props) {
+    super(props);
+  }
 
-    <main>
-      {children}
-    </main>
+  render() {
+    const { children } = this.props;
+    return (
+      <>
+        <Header />
+        <main>{children}</main>
+        <Footer />
+      </>
+    );
+  }
+}
 
-    <Footer />
-  </>
-);
-
-export default App;
+export default withRouter(App);
