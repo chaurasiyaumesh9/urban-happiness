@@ -76,6 +76,11 @@ class CreateUser extends React.Component {
           aadhar: "",
           address: ""
         });
+        this.props.setNotification({
+          type: "success",
+          message: "Record Saved Successfully!!",
+          show: true
+        });
       })
       .catch(e => console.log(e));
 
@@ -124,7 +129,7 @@ class CreateUser extends React.Component {
 
   render() {
     return (
-      <div className="container mt-5">
+      <div className="container mt-0">
         <form onSubmit={this.onSubmit}>
           <div className="row">
             <div className="col-sm-6">
@@ -261,11 +266,11 @@ class CreateUser extends React.Component {
               </div>
             </div>
           </div>
-          <button className="btn btn-primary mr-1" type="submit">
+          <button className="btn btn-sm btn-primary mr-1" type="submit">
             SUBMIT
           </button>
           <button
-            className="btn btn-primary"
+            className="btn btn-sm btn-primary"
             onClick={() => this.props.history.push("/users")}
           >
             <i className="fas fa-chevron-left"></i>GO BACK

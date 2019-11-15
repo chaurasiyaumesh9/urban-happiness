@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-// import Notifications from "../Notifications/Notifications";
 import axios from "axios";
 
 class EditUser extends React.Component {
   constructor(props) {
-    //   console.log("EDIT USERS :", props);
     super(props);
     this.onGenderChanged = this.onGenderChanged.bind(this);
     this.onFirstNameChanged = this.onFirstNameChanged.bind(this);
@@ -16,7 +14,6 @@ class EditUser extends React.Component {
     this.onPasswordChanged = this.onPasswordChanged.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.setUserProperties = this.setUserProperties.bind(this);
-    // this.setNotificationState = this.setNotificationState.bind(this);
 
     this.state = {
       firstName: "",
@@ -91,7 +88,7 @@ class EditUser extends React.Component {
         this.setUserProperties(json);
         this.props.setNotification({
           type: "success",
-          message: "Record updated successfully!!",
+          message: "Record Updated Successfully!!",
           show: true
         });
       })
@@ -137,24 +134,10 @@ class EditUser extends React.Component {
       password: e.target.value
     });
   }
-  // setNotificationState(alertObj) {
-  //   this.setState({
-  //     notification: {
-  //       type: alertObj.type,
-  //       message: alertObj.message,
-  //       show: alertObj.show
-  //     }
-  //   });
-  // }
+
   render() {
     return (
-      <div className="container mt-5">
-        {/* {this.state.notification.show && (
-          <Notifications
-            closeHandler={this.setNotificationState}
-            notification={this.state.notification}
-          />
-        )} */}
+      <div className="container mt-0">
         <form onSubmit={this.onSubmit}>
           <div className="row">
             <div className="col-sm-6">
@@ -260,7 +243,6 @@ class EditUser extends React.Component {
           <div className="row">
             <div className="col-sm-6">
               <div className="form-group">
-                {/* <legend class="col-form-label pt-0"> Gender </legend> */}
                 <div className="form-check form-check-inline">
                   <input
                     className="form-check-input"
@@ -292,11 +274,11 @@ class EditUser extends React.Component {
               </div>
             </div>
           </div>
-          <button className="btn btn-primary mr-1" type="submit">
+          <button className="btn btn-sm btn-primary mr-1" type="submit">
             SUBMIT
           </button>
           <button
-            className="btn btn-primary"
+            className="btn btn-sm btn-primary"
             onClick={() => this.props.history.push("/users")}
           >
             <i className="fas fa-chevron-left"></i> GO BACK

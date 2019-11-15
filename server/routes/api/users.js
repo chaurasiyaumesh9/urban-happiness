@@ -42,7 +42,13 @@ module.exports = app => {
   app.delete("/api/users/:id", function(req, res, next) {
     User.findOneAndRemove({ _id: req.params.id })
       .exec()
-      .then(user => res.json({}))
+      .then(() => {
+        res.json({});
+        // User.find()
+        //   .exec()
+        //   .then(users => res.json(users))
+        //   .catch(err => next(err));
+      })
       .catch(err => next(err));
   });
 };

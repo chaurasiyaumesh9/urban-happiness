@@ -5,12 +5,11 @@ import "whatwg-fetch";
 class UsersList extends React.Component {
   constructor(props) {
     super(props);
-    this.deleteUser = this.deleteUser.bind(this);
     this.state = {
       users: []
     };
   }
-  deleteUser(userid) {
+  deleteUser = userid => {
     if (!userid) return;
     fetch("/api/users/" + userid, {
       method: "DELETE",
@@ -18,15 +17,18 @@ class UsersList extends React.Component {
         "Content-type": "application/json; charset=UTF-8"
       }
     })
-      .then(response => {
-        return response.json();
-      })
+      .then(res => res.json())
       .then(json => {
-        this.fetchUsersList();
+        this.props.setNotification({
+          type: "success",
+          message: "Record Deleted Successfully!!",
+          show: true
+        });
       })
       .catch(e => console.log(e));
-  }
-  fetchUsersList() {
+  };
+
+  fetchUsersList = () => {
     fetch("/api/users")
       .then(res => res.json())
       .then(json => {
@@ -34,12 +36,12 @@ class UsersList extends React.Component {
           users: json
         });
       });
-  }
+  };
   componentDidMount() {
     this.fetchUsersList();
   }
 
-  newUser() {
+  newUser = () => {
     fetch("/api/users", { method: "POST" })
       .then(res => res.json())
       .then(json => {
@@ -50,7 +52,7 @@ class UsersList extends React.Component {
           users: data
         });
       });
-  }
+  };
 
   render() {
     const userjsx = this.state.users.map((user, i) => {
@@ -67,7 +69,7 @@ class UsersList extends React.Component {
           <td className="text-left">{user.address}</td>
           <td className="text-right">
             <Link
-              className="btn btn-md btn-primary edit-user mr-1"
+              className="btn btn-sm btn-primary edit-user mr-1"
               to={`/users/${user._id}`}
             >
               <i className="fas fa-user-edit"></i> EDIT
@@ -75,7 +77,7 @@ class UsersList extends React.Component {
 
             <button
               onClick={i => this.deleteUser(user._id)}
-              className="btn btn-md btn-danger delete-user"
+              className="btn btn-sm btn-danger delete-user"
             >
               <i className="fas fa-trash"></i> DELETE
             </button>
@@ -90,6 +92,7 @@ class UsersList extends React.Component {
             <i className="fas fa-users-cog"></i> MANAGE USERS
           </h4>
         </div> */}
+        <h4 className="title text-center mt-4 mb-4"> MANAGE USERS </h4>
         <div className="table-responsive">
           <table className="table table-striped">
             <thead>
@@ -118,7 +121,7 @@ class UsersList extends React.Component {
             <tbody>{userjsx}</tbody>
           </table>
         </div>
-        <Link className="btn btn-primary" to="/users/create">
+        <Link className="btn btn-sm btn-primary" to="/users/create">
           <i className="fas fa-plus"></i> New User
         </Link>
       </div>
