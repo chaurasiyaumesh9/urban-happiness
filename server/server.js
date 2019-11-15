@@ -8,7 +8,7 @@ const webpackDevMiddleware = require("webpack-dev-middleware");
 const webpackHotMiddleware = require("webpack-hot-middleware");
 
 const webpackConfig = require("../webpack.config");
-//const config = require(".././config/config");
+//const config = require("../config/config");
 
 const isDev = process.env.NODE_ENV !== "production";
 const port = process.env.PORT || 8080;
@@ -17,8 +17,9 @@ const port = process.env.PORT || 8080;
 // ================================================================================================
 
 // Set up Mongoose
+//mongoose.connect(isDev ? config.db_dev : config.db);
 mongoose.connect(
-  "mongodb://su:welcome123@ds061621.mlab.com:61621/silver-tribble"
+  "mongodb://su:welcome123@ds041238.mlab.com:41238/urban-happiness"
 );
 mongoose.Promise = global.Promise;
 
@@ -63,10 +64,10 @@ if (isDev) {
   });
 }
 
-app.listen(port, () => {
-  // if (err) {
-  //   console.log(err);
-  // }
+app.listen(port, err => {
+  if (err) {
+    console.log(err);
+  }
 
   console.info(">>> 🌎 Open http://localhost:%s/ in your browser.", port);
 });

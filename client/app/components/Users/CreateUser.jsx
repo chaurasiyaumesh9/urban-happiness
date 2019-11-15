@@ -270,7 +270,7 @@ class CreateUser extends React.Component {
             SUBMIT
           </button>
           <button
-            className="btn btn-sm btn-primary"
+            className="btn btn-sm btn-info"
             onClick={() => this.props.history.push("/users")}
           >
             <i className="fas fa-chevron-left"></i>GO BACK

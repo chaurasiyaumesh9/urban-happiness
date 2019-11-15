@@ -85,14 +85,10 @@ class UsersList extends React.Component {
         </tr>
       );
     });
-    return (
-      <div className="container">
-        {/* <div className="jumbotron text-center">
-          <h4>
-            <i className="fas fa-users-cog"></i> MANAGE USERS
-          </h4>
-        </div> */}
-        <h4 className="title text-center mt-4 mb-4"> MANAGE USERS </h4>
+    const listLength = this.state.users.length;
+    let userTable = null;
+    if (listLength) {
+      userTable = (
         <div className="table-responsive">
           <table className="table table-striped">
             <thead>
@@ -121,9 +117,30 @@ class UsersList extends React.Component {
             <tbody>{userjsx}</tbody>
           </table>
         </div>
+      );
+    } else {
+      userTable = (
+        <div className="no-data text-center">
+          <hr />
+          <h4 className="title text-center mt-4 mb-4"> NO DATA FOUND!! </h4>
+        </div>
+      );
+    }
+
+    return (
+      <div className="container">
+        {/* <div className="jumbotron text-center">
+          <h4>
+            <i className="fas fa-users-cog"></i> MANAGE USERS
+          </h4>
+        </div> */}
+        <h4 className="title text-center mt-4 mb-4"> MANAGE USERS </h4>
+
+        {userTable}
         <Link className="btn btn-sm btn-primary" to="/users/create">
           <i className="fas fa-plus"></i> New User
         </Link>
+        <hr />
       </div>
     );
   }
