@@ -63,12 +63,12 @@ if (isDev) {
   });
 }
 
-app.listen(port, "127.0.0.1", err => {
-  if (err) {
-    console.log(err);
-  }
+app.listen(port, () => {
+  // if (err) {
+  //   console.log(err);
+  // }
 
-  console.info(">>> 🌎 Open http://127.0.0.1:%s/ in your browser.", port);
+  console.info(">>> 🌎 Open http://localhost:%s/ in your browser.", port);
 });
 
 module.exports = app;
