@@ -4,53 +4,45 @@ import axios from "axios";
 class CreateUser extends React.Component {
   constructor(props) {
     super(props);
-    this.onGenderChanged = this.onGenderChanged.bind(this);
-    this.onFirstNameChanged = this.onFirstNameChanged.bind(this);
-    this.onLastNameChanged = this.onLastNameChanged.bind(this);
-    this.onContactChanged = this.onContactChanged.bind(this);
-    this.onAadharChanged = this.onAadharChanged.bind(this);
-    this.onAddressChanged = this.onAddressChanged.bind(this);
-    this.onUsernameChanged = this.onUsernameChanged.bind(this);
-    this.onPasswordChanged = this.onPasswordChanged.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-    this.setUserProperties = this.setUserProperties.bind(this);
-
     this.state = {
-      firstName: "",
-      lastName: "",
-      gender: "",
-      username: "",
+      name: "",
+      email: "",
+      addressProof: "",
+      idProof: "",
       password: "",
       contact: "",
-      aadhar: "",
-      address: ""
+      photo: "",
+      type: "",
+      gender: ""
     };
   }
-  setUserProperties(userobj) {
+  setUserProperties = userobj => {
     this.setState({
-      firstName: userobj.firstName,
-      lastName: userobj.lastName,
-      gender: userobj.gender,
-      username: userobj.username,
+      name: userobj.name,
+      email: userobj.email,
+      addressProof: userobj.addressProof,
+      idProof: userobj.idProof,
       password: userobj.password,
       contact: userobj.contact,
-      aadhar: userobj.aadhar,
-      address: userobj.address
+      photo: userobj.photo,
+      type: userobj.type,
+      gender: userobj.gender
     });
-  }
+  };
 
-  onSubmit(e) {
+  onSubmit = e => {
     e.preventDefault();
     let self = this;
     const obj = {
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
-      gender: this.state.gender,
-      username: this.state.username,
+      name: this.state.name,
+      email: this.state.email,
+      addressProof: this.state.addressProof,
+      idProof: this.state.idProof,
       password: this.state.password,
       contact: this.state.contact,
-      aadhar: this.state.aadhar,
-      address: this.state.aadhar
+      photo: this.state.photo,
+      type: this.state.type,
+      gender: this.state.gender
     };
 
     fetch("/api/users/", {
@@ -67,14 +59,15 @@ class CreateUser extends React.Component {
       })
       .then(json => {
         this.setUserProperties({
-          firstName: "",
-          lastName: "",
-          gender: "",
-          username: "",
+          name: "",
+          email: "",
+          addressProof: "",
+          idProof: "",
           password: "",
           contact: "",
-          aadhar: "",
-          address: ""
+          photo: "",
+          type: "",
+          gender: ""
         });
         this.props.setNotification({
           type: "success",
@@ -83,86 +76,108 @@ class CreateUser extends React.Component {
         });
       })
       .catch(e => console.log(e));
-
-    //this.props.history.push("/users");
-  }
-  onAddressChanged(e) {
+  };
+  onNameChanged = e => {
     this.setState({
-      address: e.target.value
+      name: e.target.value
     });
-  }
-  onAadharChanged(e) {
+  };
+  onEmailChanged = e => {
     this.setState({
-      aadhar: e.target.value
+      email: e.target.value
     });
-  }
-  onGenderChanged(e) {
-    this.setState({
-      gender: e.target.value
-    });
-  }
-  onFirstNameChanged(e) {
-    this.setState({
-      firstName: e.target.value
-    });
-  }
-  onLastNameChanged(e) {
-    this.setState({
-      lastName: e.target.value
-    });
-  }
-  onContactChanged(e) {
+  };
+  onContactChanged = e => {
     this.setState({
       contact: e.target.value
     });
-  }
-  onUsernameChanged(e) {
-    this.setState({
-      username: e.target.value
-    });
-  }
-  onPasswordChanged(e) {
+  };
+  onPasswordChanged = e => {
     this.setState({
       password: e.target.value
     });
-  }
+  };
 
+  onGenderChanged = e => {
+    this.setState({
+      gender: e.target.value
+    });
+  };
+  onUserRoleChanged = e => {
+    this.setState({
+      type: e.target.value
+    });
+  };
+  handleImageChange = e => {
+    e.preventDefault();
+
+    let reader = new FileReader();
+    let file = e.target.files[0];
+
+    reader.onloadend = () => {
+      this.setState({
+        addressProof: {
+          file: file,
+          addressProofPreviewUrl: reader.result
+        }
+      });
+    };
+
+    reader.readAsDataURL(file);
+  };
   render() {
+    let { addressProofPreviewUrl } = this.state.addressProof;
+    let $addressProofPreviewUrl = null;
+    if (addressProofPreviewUrl) {
+      $addressProofPreviewUrl = <img src={addressProofPreviewUrl} />;
+    } else {
+      $addressProofPreviewUrl = (
+        <div className="previewText mt-5">
+          <i>Please select an Image for Preview</i>
+        </div>
+      );
+    }
     return (
       <div className="container mt-0">
         <form onSubmit={this.onSubmit}>
           <div className="row">
-            <div className="col-sm-6">
+            <div className="col-sm-4">
               <div className="form-group">
-                <label htmlFor="txt-firstname"> First Name</label>
+                <label className="col-form-label" htmlFor="txt-name">
+                  {" "}
+                  Name
+                </label>
                 <input
                   className="form-control"
                   type="text"
-                  name="txt-firstname"
-                  id="txt-firstname"
-                  value={this.state.firstName}
-                  onChange={this.onFirstNameChanged}
+                  name="txt-name"
+                  id="txt-name"
+                  value={this.state.name}
+                  onChange={this.onNameChanged}
                 />
               </div>
             </div>
-            <div className="col-sm-6">
+            <div className="col-sm-4">
               <div className="form-group">
-                <label htmlFor="txt-lastname"> Last Name</label>
+                <label className="col-form-label" htmlFor="txt-lastname">
+                  {" "}
+                  Email{" "}
+                </label>
                 <input
                   className="form-control"
                   type="text"
-                  name="txt-lastname"
-                  id="txt-lastname"
-                  value={this.state.lastName}
-                  onChange={this.onLastNameChanged}
+                  name="txt-email"
+                  id="txt-email"
+                  value={this.state.email}
+                  onChange={this.onEmailChanged}
                 />
               </div>
             </div>
-          </div>
-          <div className="row">
-            <div className="col-sm-6">
+            <div className="col-sm-4">
               <div className="form-group">
-                <label htmlFor="txt-contact">Contact</label>
+                <label className="col-form-label" htmlFor="txt-contact">
+                  Contact
+                </label>
                 <input
                   className="form-control"
                   type="text"
@@ -174,37 +189,32 @@ class CreateUser extends React.Component {
                 />
               </div>
             </div>
-            <div className="col-sm-6">
-              <div className="form-group">
-                <label htmlFor="txt-aadhar">Aadhar</label>
-                <input
-                  className="form-control"
-                  type="text"
-                  name="txt-aadhar"
-                  id="txt-aadhar"
-                  value={this.state.aadhar}
-                  onChange={this.onAadharChanged}
-                />
-              </div>
-            </div>
           </div>
           <div className="row">
-            <div className="col-sm-6">
+            <div className="col-sm-4">
               <div className="form-group">
-                <label htmlFor="txt-username">Username</label>
-                <input
+                <label className="col-form-label" htmlFor="txt-usertype">
+                  {" "}
+                  User Role/Type{" "}
+                </label>
+                <select
                   className="form-control"
-                  type="text"
-                  name="txt-username"
-                  id="txt-username"
-                  value={this.state.username}
-                  onChange={this.onUsernameChanged}
-                />
+                  name="txt-usertype"
+                  id="text-usertype"
+                  onChange={this.onUserRoleChanged}
+                >
+                  <option value="admin">ADMIN</option>
+                  <option value="on-field-user">ON-FIELD-USER</option>
+                  <option value="vendor">VENDOR</option>
+                  <option value="customer">CUSTOMER</option>
+                </select>
               </div>
             </div>
-            <div className="col-sm-6">
+            <div className="col-sm-4">
               <div className="form-group">
-                <label htmlFor="txt-password">Password</label>
+                <label className="col-form-label" htmlFor="txt-password">
+                  Password
+                </label>
                 <input
                   className="form-control"
                   type="password"
@@ -217,24 +227,45 @@ class CreateUser extends React.Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-sm-6">
-              <div className="form-group">
-                <label htmlFor="txt-address">Address</label>
-                <textarea
-                  className="form-control"
-                  name="txt-address"
-                  id="txt-address"
-                  value={this.state.address}
-                  cols="16"
-                  rows="5"
-                  onChange={this.onAddressChanged}
-                ></textarea>
+            <div className="col-sm-12">
+              <div className="row">
+                <div className="col-sm-4">
+                  <div className="form-group">
+                    <label
+                      className="col-form-label"
+                      htmlFor="file-addressproof"
+                    >
+                      {" "}
+                      Address Proof
+                    </label>
+                    <div className="input-group mb-3">
+                      <div className="custom-file">
+                        <input
+                          type="file"
+                          className="custom-file-input"
+                          id="file-addressproof"
+                          onChange={e => this.handleImageChange(e)}
+                        />
+                        <label
+                          className="custom-file-label"
+                          htmlFor="file-addressproof"
+                        >
+                          Choose file
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-sm-8">
+                  <div className="imgPreview">{$addressProofPreviewUrl}</div>
+                </div>
               </div>
             </div>
           </div>
           <div className="row">
-            <div className="col-sm-6">
+            <div className="col-sm-4">
               <div className="form-group">
+                <legend className="col-form-label mt-3"> Gender </legend>
                 <div className="form-check form-check-inline">
                   <input
                     className="form-check-input"

@@ -8,3 +8,11 @@ $border-radius-lg: 0;
 $font-size-base: 0.95rem;
 $primary: #1976d2;
 @import "~bootstrap/scss/bootstrap";
+
+.imgPreview {
+  img {
+    max-width: 100%;
+    height: auto;
+    max-height: 380px;
+  }
+}
