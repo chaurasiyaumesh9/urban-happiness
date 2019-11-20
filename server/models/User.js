@@ -10,11 +10,11 @@ const UserSchema = new mongoose.Schema({
     required: true
   },
   addressProof: {
-    type: String,
+    type: mongoose.Schema.Types.Mixed,
     required: true
   },
   idProof: {
-    type: String,
+    type: mongoose.Schema.Types.Mixed,
     required: true
   },
   password: {
@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema({
     required: true
   },
   photo: {
-    type: String,
+    type: mongoose.Schema.Types.Mixed,
     required: true
   },
   type: {

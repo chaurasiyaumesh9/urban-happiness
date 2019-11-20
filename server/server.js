@@ -6,9 +6,11 @@ const path = require("path");
 const webpack = require("webpack");
 const webpackDevMiddleware = require("webpack-dev-middleware");
 const webpackHotMiddleware = require("webpack-hot-middleware");
+const formData = require("express-form-data");
+const cloudinary = require("cloudinary");
 
 const webpackConfig = require("../webpack.config");
-//const config = require("../config/config");
+const config = require("../config/config");
 
 const isDev = process.env.NODE_ENV !== "production";
 const port = process.env.PORT || 8080;
@@ -17,15 +19,19 @@ const port = process.env.PORT || 8080;
 // ================================================================================================
 
 // Set up Mongoose
-//mongoose.connect(isDev ? config.db_dev : config.db);
-mongoose.connect(
-  "mongodb://su:welcome123@ds041238.mlab.com:41238/urban-happiness"
-);
+mongoose.connect(isDev ? config.db_dev : config.db);
+// mongoose.connect(
+//   "mongodb://su:welcome123@ds041238.mlab.com:41238/urban-happiness"
+// );
 mongoose.Promise = global.Promise;
 
 const app = express();
+
+cloudinary.config(config.cloudinary);
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(formData.parse());
 
 // API routes
 require("./routes")(app);

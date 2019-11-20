@@ -7,11 +7,27 @@ class CreateUser extends React.Component {
     this.state = {
       name: "",
       email: "",
-      addressProof: "",
-      idProof: "",
+      addressProof: {
+        type: "",
+        document: {
+          url: "",
+          secure_url: ""
+        }
+      },
+      idProof: {
+        type: "",
+        document: {
+          url: "",
+          secure_url: ""
+        }
+      },
       password: "",
+      confirmPassword: "",
       contact: "",
-      photo: "",
+      photo: {
+        url: "",
+        secure_url: ""
+      },
       type: "",
       gender: ""
     };
@@ -23,59 +39,79 @@ class CreateUser extends React.Component {
       addressProof: userobj.addressProof,
       idProof: userobj.idProof,
       password: userobj.password,
+      confirmPassword: userobj.confirmPassword,
       contact: userobj.contact,
       photo: userobj.photo,
       type: userobj.type,
       gender: userobj.gender
     });
   };
-
+  uploadAddressProof = () => {
+    const formData = new FormData();
+    let file = this.state.addressProofDocument.file;
+    formData.append(0, file);
+    fetch("/api/image-upload", {
+      method: "POST",
+      body: formData
+    })
+      .then(res => res.json())
+      .then(image => {
+        console.log("address proof : ", image);
+        // this.setState({
+        //   addressProofDocument: image[0]
+        // });
+      });
+  };
   onSubmit = e => {
     e.preventDefault();
-    let self = this;
-    const obj = {
-      name: this.state.name,
-      email: this.state.email,
-      addressProof: this.state.addressProof,
-      idProof: this.state.idProof,
-      password: this.state.password,
-      contact: this.state.contact,
-      photo: this.state.photo,
-      type: this.state.type,
-      gender: this.state.gender
-    };
 
-    fetch("/api/users/", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json; charset=UTF-8"
-      },
-      body: JSON.stringify({
-        user: obj
-      })
-    })
-      .then(response => {
-        return response.json();
-      })
-      .then(json => {
-        this.setUserProperties({
-          name: "",
-          email: "",
-          addressProof: "",
-          idProof: "",
-          password: "",
-          contact: "",
-          photo: "",
-          type: "",
-          gender: ""
-        });
-        this.props.setNotification({
-          type: "success",
-          message: "Record Saved Successfully!!",
-          show: true
-        });
-      })
-      .catch(e => console.log(e));
+    this.uploadAddressProof();
+    return;
+    // const obj = {
+    //   name: this.state.name,
+    //   email: this.state.email,
+    //   addressProof: this.state.addressProof,
+    //   idProof: this.state.idProof,
+    //   password: this.state.password,
+    //  confirmPassword:this.state.confirmPassword,
+    //   contact: this.state.contact,
+    //   photo: this.state.photo,
+    //   type: this.state.type,
+    //   gender: this.state.gender
+    // };
+
+    // fetch("/api/users/", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-type": "application/json; charset=UTF-8"
+    //   },
+    //   body: JSON.stringify({
+    //     user: obj
+    //   })
+    // })
+    //   .then(response => {
+    //     return response.json();
+    //   })
+    //   .then(json => {
+    //     this.setUserProperties({
+    //       name: "",
+    //       email: "",
+    //        addressType: "",
+    //       addressProof: "",
+    //       idProof: "",
+    //       password: "",
+    //       contact: "",
+    //       photo: "",
+    //       type: "",
+    //       gender: ""
+    //     });
+    //     this.props.setNotification({
+    //       type: "success",
+    //       message: "Record Saved Successfully!!",
+    //       show: true
+    //     });
+    //   })
+    //   .catch(e => console.log(e));
   };
   onNameChanged = e => {
     this.setState({
@@ -98,6 +134,12 @@ class CreateUser extends React.Component {
     });
   };
 
+  onConfirmPasswordChanged = e => {
+    this.setState({
+      confirmPassword: e.target.value
+    });
+  };
+
   onGenderChanged = e => {
     this.setState({
       gender: e.target.value
@@ -108,32 +150,88 @@ class CreateUser extends React.Component {
       type: e.target.value
     });
   };
-  handleImageChange = e => {
+  handleAddressProofImageChange = e => {
     e.preventDefault();
 
     let reader = new FileReader();
     let file = e.target.files[0];
 
     reader.onloadend = () => {
-      this.setState({
+      this.setState(prevState => ({
         addressProof: {
-          file: file,
-          addressProofPreviewUrl: reader.result
+          ...prevState.addressProof,
+          document: {
+            file: file,
+            url: reader.result
+          }
         }
-      });
+      }));
     };
-
-    reader.readAsDataURL(file);
+    if (file) reader.readAsDataURL(file);
+  };
+  onAddressTypeChanged = e => {
+    let updatedType = e.target.value;
+    this.setState(prevState => ({
+      addressProof: {
+        type: updatedType
+      }
+    }));
   };
   render() {
-    let { addressProofPreviewUrl } = this.state.addressProof;
-    let $addressProofPreviewUrl = null;
-    if (addressProofPreviewUrl) {
-      $addressProofPreviewUrl = <img src={addressProofPreviewUrl} />;
+    let $addressProofDocumentPreview = null;
+    if (
+      this.state.addressProof.document &&
+      (this.state.addressProof.document.url ||
+        this.state.addressProof.document.secure_url)
+    ) {
+      $addressProofDocumentPreview = (
+        <img
+          src={
+            this.state.addressProof.document.secure_url ||
+            this.state.addressProof.document.url
+          }
+        />
+      );
     } else {
-      $addressProofPreviewUrl = (
+      $addressProofDocumentPreview = (
         <div className="previewText mt-5">
-          <i>Please select an Image for Preview</i>
+          <i>Please choose address proof to see preview</i>
+        </div>
+      );
+    }
+    let htmlAddressProof = null;
+    if (this.state.addressProof.type != "") {
+      htmlAddressProof = (
+        <div className="col-sm-8">
+          <div className="row">
+            <div className="col-sm-4">
+              <div className="form-group">
+                <label className="col-form-label" htmlFor="file-addressproof">
+                  {" "}
+                  Photo of {this.state.addressProof.type}
+                </label>
+                <div className="input-group mb-3">
+                  <div className="custom-file">
+                    <input
+                      type="file"
+                      className="custom-file-input"
+                      id="file-addressproof"
+                      onChange={e => this.handleAddressProofImageChange(e)}
+                    />
+                    <label
+                      className="custom-file-label"
+                      htmlFor="file-addressproof"
+                    >
+                      Choose file
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-sm-8">
+              <div className="imgPreview">{$addressProofDocumentPreview}</div>
+            </div>
+          </div>
         </div>
       );
     }
@@ -225,42 +323,50 @@ class CreateUser extends React.Component {
                 />
               </div>
             </div>
-          </div>
-          <div className="row">
-            <div className="col-sm-12">
-              <div className="row">
-                <div className="col-sm-4">
-                  <div className="form-group">
-                    <label
-                      className="col-form-label"
-                      htmlFor="file-addressproof"
-                    >
-                      {" "}
-                      Address Proof
-                    </label>
-                    <div className="input-group mb-3">
-                      <div className="custom-file">
-                        <input
-                          type="file"
-                          className="custom-file-input"
-                          id="file-addressproof"
-                          onChange={e => this.handleImageChange(e)}
-                        />
-                        <label
-                          className="custom-file-label"
-                          htmlFor="file-addressproof"
-                        >
-                          Choose file
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-sm-8">
-                  <div className="imgPreview">{$addressProofPreviewUrl}</div>
-                </div>
+            <div className="col-sm-4">
+              <div className="form-group">
+                <label
+                  className="col-form-label"
+                  htmlFor="txt-confirm-password"
+                >
+                  Confirm Password
+                </label>
+                <input
+                  className="form-control"
+                  type="password"
+                  name="txt-confirm-password"
+                  id="txt-confirm-password"
+                  value={this.state.confirmPassword}
+                  onChange={this.onConfirmPasswordChanged}
+                />
               </div>
             </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-4">
+              <div className="form-group">
+                <label htmlFor="addressType" className="col-form-label">
+                  {" "}
+                  Proof of Residence{" "}
+                </label>
+                <select
+                  className="form-control"
+                  name="txt-addressType"
+                  id="text-addressType"
+                  onChange={this.onAddressTypeChanged}
+                >
+                  <option value="aadhar-card">AADHAR CARD</option>
+                  <option value="driving-license">DRIVING LICENSE</option>
+                  <option value="passport">PASSPORT</option>
+                  <option value="bank-passbook">BANK PASSBOOK</option>
+                  <option value="electricity-bill">ELECTRICITY BILL</option>
+                  <option value="gas-bill">GAS BILL</option>
+                  <option value="water-bill">WATER BILL</option>
+                  <option value="ration-card">RATION CARD</option>
+                </select>
+              </div>
+            </div>
+            {htmlAddressProof}
           </div>
           <div className="row">
             <div className="col-sm-4">
