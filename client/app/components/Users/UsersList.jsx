@@ -41,19 +41,6 @@ class UsersList extends React.Component {
     this.fetchUsersList();
   }
 
-  newUser = () => {
-    fetch("/api/users", { method: "POST" })
-      .then(res => res.json())
-      .then(json => {
-        let data = this.state.users;
-        data.push(json);
-
-        this.setState({
-          users: data
-        });
-      });
-  };
-
   render() {
     const userjsx = this.state.users.map((user, i) => {
       return (
@@ -61,12 +48,18 @@ class UsersList extends React.Component {
           <th className="text-right" scope="row">
             {i + 1}
           </th>
-          <td className="text-left">
-            {user.firstName} {user.lastName}
-          </td>
+          <td className="text-left">{user.accountHolderName}</td>
           <td className="text-left">{user.contact}</td>
-          <td className="text-left">{user.username}</td>
-          <td className="text-left">{user.address}</td>
+          <td className="text-left">{user.email}</td>
+          <td className="text-left">{user.userType}</td>
+          <td className="text-left">
+            <div className="user-photo-preview">
+              <img
+                src={user.photo.secure_url || user.photo.url}
+                alt={user.accountHolderName}
+              />
+            </div>
+          </td>
           <td className="text-right">
             <Link
               className="btn btn-sm btn-primary edit-user mr-1"
@@ -97,16 +90,19 @@ class UsersList extends React.Component {
                   #
                 </th>
                 <th className="text-left" scope="col">
-                  NAME
+                  USER NAME
                 </th>
                 <th className="text-left" scope="col">
                   CONTACT
                 </th>
                 <th className="text-left" scope="col">
-                  USERNAME
+                  EMAIL
                 </th>
                 <th className="text-left" scope="col">
-                  ADDRESS
+                  USER ROLE
+                </th>
+                <th className="text-left" scope="col">
+                  USER PHOTO
                 </th>
                 <th className="text-right" scope="col">
                   {" "}

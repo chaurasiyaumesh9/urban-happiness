@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-  name: {
+  accountHolderName: {
     type: String,
     required: true
   },
@@ -29,7 +29,7 @@ const UserSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.Mixed,
     required: true
   },
-  type: {
+  userType: {
     type: String,
     required: true
   },
