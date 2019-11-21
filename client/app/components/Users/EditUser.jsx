@@ -37,13 +37,19 @@ class EditUser extends React.Component {
         accountHolderName: "",
         email: "",
         contact: "",
-        addressProof: "",
+        addressProof: {
+          type: "",
+          document: ""
+        },
         gender: "",
         userType: "",
         photo: "",
         password: "",
-        idProof: "",
-        addressProof: ""
+        confirmPassword: "",
+        idProof: {
+          type: "",
+          document: ""
+        }
       },
       formValid: false
     };
@@ -97,7 +103,24 @@ class EditUser extends React.Component {
         userType: "",
         gender: ""
       },
-      errors: {}
+      errors: {
+        accountHolderName: "",
+        email: "",
+        contact: "",
+        addressProof: {
+          type: "",
+          document: ""
+        },
+        gender: "",
+        userType: "",
+        photo: "",
+        password: "",
+        confirmPassword: "",
+        idProof: {
+          type: "",
+          document: ""
+        }
+      }
     });
   };
   uploadImages = () => {
@@ -144,45 +167,48 @@ class EditUser extends React.Component {
   };
   onSubmit = e => {
     e.preventDefault();
+    return;
+    let formIsValid = this.validateFields();
+    if (formIsValid || this.state.formValid) {
+      this.uploadImages()
+        .then(() => {
+          const obj = {
+            accountHolderName: this.state.fields.accountHolderName,
+            email: this.state.fields.email,
+            addressProof: this.state.fields.addressProof,
+            idProof: this.state.fields.idProof,
+            password: this.state.fields.password,
+            confirmPassword: this.state.fields.confirmPassword,
+            contact: this.state.fields.contact,
+            photo: this.state.fields.photo,
+            userType: this.state.fields.userType,
+            gender: this.state.fields.gender
+          };
 
-    this.uploadImages()
-      .then(() => {
-        const obj = {
-          accountHolderName: this.state.fields.accountHolderName,
-          email: this.state.fields.email,
-          addressProof: this.state.fields.addressProof,
-          idProof: this.state.fields.idProof,
-          password: this.state.fields.password,
-          confirmPassword: this.state.fields.confirmPassword,
-          contact: this.state.fields.contact,
-          photo: this.state.fields.photo,
-          userType: this.state.fields.userType,
-          gender: this.state.fields.gender
-        };
-
-        fetch("/api/users/", {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json; charset=UTF-8"
-          },
-          body: JSON.stringify({
-            user: obj
+          fetch("/api/users/", {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json; charset=UTF-8"
+            },
+            body: JSON.stringify({
+              user: obj
+            })
           })
+            .then(response => {
+              return response.json();
+            })
+            .then(json => {
+              this.resetState();
+              this.props.setNotification({
+                type: "success",
+                message: "User Saved Successfully!!",
+                show: true
+              });
+            })
+            .catch(e => console.log(e));
         })
-          .then(response => {
-            return response.json();
-          })
-          .then(json => {
-            this.resetState();
-            this.props.setNotification({
-              type: "success",
-              message: "User Saved Successfully!!",
-              show: true
-            });
-          })
-          .catch(e => console.log(e));
-      })
-      .catch(e => console.log(e));
+        .catch(e => console.log(e));
+    }
   };
 
   handleAddressProofImageChange = e => {
@@ -221,7 +247,7 @@ class EditUser extends React.Component {
         fields: {
           ...prevState.fields,
           idProof: {
-            ...prevState.idProof,
+            ...prevState.fields.idProof,
             document: {
               file: file,
               url: reader.result
@@ -263,6 +289,9 @@ class EditUser extends React.Component {
       fields: {
         ...prevState.fields,
         addressProof: {
+          document: {
+            ...prevState.fields.addressProof.document
+          },
           type: updatedType
         }
       },
@@ -277,6 +306,9 @@ class EditUser extends React.Component {
       fields: {
         ...prevState.fields,
         idProof: {
+          document: {
+            ...prevState.fields.idProof.document
+          },
           type: updatedType
         }
       },
@@ -289,71 +321,135 @@ class EditUser extends React.Component {
     const name = e.target.name;
     const value = e.target.value;
 
-    this.setState(
-      prevState => ({
-        fields: {
-          ...prevState.fields,
-          [name]: value
-        },
-        errors: {
-          ...prevState.errors
-        }
-      }),
-      () => {
-        this.validateField(name, value);
-      }
-    );
-  };
-  validateField = (fieldName, value) => {
-    let fieldValidationErrors = this.state.errors;
-
-    switch (fieldName) {
-      case "email":
-        if (value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
-          fieldValidationErrors.email = "";
-        } else {
-          fieldValidationErrors.email = "Email is invalid";
-        }
-        break;
-      case "accountHolderName":
-        if (value.trim().length >= 4) {
-          fieldValidationErrors.accountHolderName = "";
-        } else {
-          fieldValidationErrors.accountHolderName = "Name is too short";
-        }
-        break;
-      case "contact":
-        if (value.trim().length == 10) {
-          fieldValidationErrors.contact = "";
-        } else {
-          fieldValidationErrors.contact =
-            "Contact number should be of 10 digits";
-        }
-        if (value.match(/^[0-9]*$/i)) {
-          fieldValidationErrors.contact = "";
-        } else {
-          fieldValidationErrors.contact = "Only numbers are allowed";
-        }
-        break;
-      default:
-        break;
-    }
-    this.setState(
-      {
-        errors: fieldValidationErrors
+    this.setState(prevState => ({
+      fields: {
+        ...prevState.fields,
+        [name]: value
       },
-      this.validateForm
-    );
+      errors: {
+        ...prevState.errors
+      }
+    }));
   };
-  validateForm = () => {
-    const isEmpty = Object.values(this.state.errors).every(
-      x => x === null || x === ""
-    );
+  validateFields = () => {
+    let fieldValidationErrors = this.state.errors;
+    let formIsValid = true;
+    for (let fieldName in this.state.fields) {
+      let value = this.state.fields[fieldName];
+      switch (fieldName) {
+        case "accountHolderName":
+          fieldValidationErrors.accountHolderName = "";
+          if (value.trim().length < 4) {
+            fieldValidationErrors.accountHolderName = "Name is too short";
+            formIsValid = false;
+          }
+          break;
+        case "gender":
+          fieldValidationErrors.gender = "";
+          if (value.trim() == "") {
+            fieldValidationErrors.gender = "Please select gender";
+            formIsValid = false;
+          }
+          break;
+        case "email":
+          fieldValidationErrors.email = "";
+          if (!value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
+            fieldValidationErrors.email = "Email is invalid";
+            formIsValid = false;
+          }
+          break;
+        case "contact":
+          fieldValidationErrors.contact = "";
+          if (value.trim().length < 10) {
+            fieldValidationErrors.contact =
+              "Contact number should be of 10 digits";
+            formIsValid = false;
+          }
+          if (!value.match(/^[0-9]*$/i)) {
+            fieldValidationErrors.contact = "Only numbers are allowed";
+            formIsValid = false;
+          }
+          break;
+        case "userType":
+          fieldValidationErrors.userType = "";
+          if (value.trim() == "") {
+            fieldValidationErrors.userType = "Please choose user's role";
+            formIsValid = false;
+          }
+          break;
+        case "password":
+          fieldValidationErrors.password = "";
+          if (value.trim().length < 6) {
+            fieldValidationErrors.password =
+              "Password should be minimum of 6 characters";
+            formIsValid = false;
+          }
+          break;
+        case "confirmPassword":
+          fieldValidationErrors.confirmPassword = "";
+          if (value.trim() != this.state.fields.password.trim()) {
+            fieldValidationErrors.confirmPassword =
+              "Not matching with password";
+            formIsValid = false;
+          }
+          break;
+        case "addressProof":
+          fieldValidationErrors.addressProof.type = "";
+          fieldValidationErrors.addressProof.document = "";
+          if (value.type.trim() == "") {
+            fieldValidationErrors.addressProof.type =
+              "Please choose document type";
+            formIsValid = false;
+          }
+          if (
+            value.document.url == "" &&
+            !value.document.file &&
+            value.document.secure_url == "" &&
+            value.type.trim() != ""
+          ) {
+            fieldValidationErrors.addressProof.document = "Please upload image";
+            formIsValid = false;
+          }
+          break;
+        case "idProof":
+          fieldValidationErrors.idProof.type = "";
+          fieldValidationErrors.idProof.document = "";
+          if (value.type.trim() == "") {
+            fieldValidationErrors.idProof.type = "Please choose document type";
+            formIsValid = false;
+          }
+          if (
+            value.document.url == "" &&
+            !value.document.file &&
+            value.document.secure_url == "" &&
+            value.type.trim() != ""
+          ) {
+            fieldValidationErrors.idProof.document = "Please upload image";
+            formIsValid = false;
+          }
+          break;
+        case "photo":
+          fieldValidationErrors.photo = "";
+          if (value.url == "" && !value.file && value.secure_url == "") {
+            fieldValidationErrors.photo = "Please upload your photo";
+            formIsValid = false;
+          }
+          break;
+        default:
+          break;
+      }
+    }
 
-    this.setState({
-      formValid: isEmpty
-    });
+    this.setState(prevState => ({
+      fields: {
+        ...prevState.fields
+      },
+      errors: fieldValidationErrors,
+      formValid: formIsValid
+    }));
+    return formIsValid;
   };
+
   errorClass(error) {
     return error.length === 0 ? "" : "is-invalid";
   }
@@ -432,11 +528,13 @@ class EditUser extends React.Component {
                   {" "}
                   Photo copy of {this.state.fields.addressProof.type}
                 </label>
-                <div className="input-group mb-3">
+                <div className="input-group">
                   <div className="custom-file">
                     <input
                       type="file"
-                      className="custom-file-input"
+                      className={`custom-file-input ${this.errorClass(
+                        this.state.errors.addressProof.document
+                      )}`}
                       id="file-addressproof"
                       onChange={e => this.handleAddressProofImageChange(e)}
                     />
@@ -448,6 +546,9 @@ class EditUser extends React.Component {
                     </label>
                   </div>
                 </div>
+                <span className="error">
+                  {this.state.errors.addressProof.document}
+                </span>
               </div>
             </div>
             <div className="col-sm-8">
@@ -467,11 +568,13 @@ class EditUser extends React.Component {
                   {" "}
                   Photo copy of {this.state.fields.idProof.type}
                 </label>
-                <div className="input-group mb-3">
+                <div className="input-group">
                   <div className="custom-file">
                     <input
                       type="file"
-                      className="custom-file-input"
+                      className={`custom-file-input ${this.errorClass(
+                        this.state.errors.idProof.document
+                      )}`}
                       id="file-idproof"
                       onChange={e => this.handleIdProofImageChange(e)}
                     />
@@ -480,6 +583,9 @@ class EditUser extends React.Component {
                     </label>
                   </div>
                 </div>
+                <span className="error">
+                  {this.state.errors.idProof.document}
+                </span>
               </div>
             </div>
             <div className="col-sm-8">
@@ -568,17 +674,21 @@ class EditUser extends React.Component {
                   User Role/Type{" "}
                 </label>
                 <select
-                  className="form-control"
+                  className={`form-control ${this.errorClass(
+                    this.state.errors.userType
+                  )}`}
                   name="userType"
                   id="userType"
                   value={this.state.fields.userType || ""}
                   onChange={event => this.handleUserInput(event)}
                 >
+                  <option value="">SELECT USER ROLE</option>
                   <option value="admin">ADMIN</option>
                   <option value="on-field-user">ON-FIELD-USER</option>
                   <option value="vendor">VENDOR</option>
                   <option value="customer">CUSTOMER</option>
                 </select>
+                <span className="error">{this.state.errors.userType}</span>
               </div>
             </div>
             <div className="col-sm-4">
@@ -587,13 +697,16 @@ class EditUser extends React.Component {
                   Password
                 </label>
                 <input
-                  className="form-control"
+                  className={`form-control ${this.errorClass(
+                    this.state.errors.password
+                  )}`}
                   type="password"
                   name="password"
                   id="password"
                   value={this.state.fields.password || ""}
                   onChange={event => this.handleUserInput(event)}
                 />
+                <span className="error">{this.state.errors.password}</span>
               </div>
             </div>
             <div className="col-sm-4">
@@ -602,13 +715,18 @@ class EditUser extends React.Component {
                   Confirm Password
                 </label>
                 <input
-                  className="form-control"
+                  className={`form-control ${this.errorClass(
+                    this.state.errors.confirmPassword
+                  )}`}
                   type="password"
                   name="confirmPassword"
                   id="confirmPassword"
                   value={this.state.fields.confirmPassword || ""}
                   onChange={event => this.handleUserInput(event)}
                 />
+                <span className="error">
+                  {this.state.errors.confirmPassword}
+                </span>
               </div>
             </div>
           </div>
@@ -623,12 +741,15 @@ class EditUser extends React.Component {
                   Proof of Residence{" "}
                 </label>
                 <select
-                  className="form-control"
+                  className={`form-control ${this.errorClass(
+                    this.state.errors.addressProof.type
+                  )}`}
                   name="dropdown-addressType"
                   id="dropdown-addressType"
                   value={this.state.fields.addressProof.type || ""}
                   onChange={this.onAddressTypeChanged}
                 >
+                  <option value="">SELECT DOCUMENT TYPE</option>
                   <option value="aadhar-card">AADHAR CARD</option>
                   <option value="driving-license">DRIVING LICENSE</option>
                   <option value="passport">PASSPORT</option>
@@ -638,6 +759,9 @@ class EditUser extends React.Component {
                   <option value="water-bill">WATER BILL</option>
                   <option value="ration-card">RATION CARD</option>
                 </select>
+                <span className="error">
+                  {this.state.errors.addressProof.type}
+                </span>
               </div>
             </div>
             {htmlAddressProof}
@@ -650,7 +774,9 @@ class EditUser extends React.Component {
                   Proof of ID{" "}
                 </label>
                 <select
-                  className="form-control"
+                  className={`form-control ${this.errorClass(
+                    this.state.errors.idProof.type
+                  )}`}
                   name="dropdown-idType"
                   id="dropdown-idType"
                   value={this.state.fields.idProof.type || ""}
@@ -667,6 +793,7 @@ class EditUser extends React.Component {
                   <option value="water-bill">WATER BILL</option>
                   <option value="ration-card">RATION CARD</option>
                 </select>
+                <span className="error">{this.state.errors.idProof.type}</span>
               </div>
             </div>
             {htmlIdProof}
@@ -678,11 +805,13 @@ class EditUser extends React.Component {
                   {" "}
                   Upload Photo
                 </label>
-                <div className="input-group mb-3">
+                <div className="input-group">
                   <div className="custom-file">
                     <input
                       type="file"
-                      className="custom-file-input"
+                      className={`custom-file-input ${this.errorClass(
+                        this.state.errors.photo
+                      )}`}
                       id="file-user-photo"
                       onChange={e => this.handlePhotoChange(e)}
                     />
@@ -694,6 +823,7 @@ class EditUser extends React.Component {
                     </label>
                   </div>
                 </div>
+                <span className="error">{this.state.errors.photo}</span>
               </div>
             </div>
             <div className="col-sm-8">
@@ -732,15 +862,12 @@ class EditUser extends React.Component {
                     Female
                   </label>
                 </div>
+                <span className="error">{this.state.errors.gender}</span>
               </div>
             </div>
           </div>
-          <button
-            disabled={!this.state.formValid}
-            className="btn btn-sm btn-primary mr-1"
-            type="submit"
-          >
-            SUBMIT
+          <button className="btn btn-sm btn-primary mr-1" type="submit">
+            SAVE
           </button>
           <button
             className="btn btn-sm btn-info"
