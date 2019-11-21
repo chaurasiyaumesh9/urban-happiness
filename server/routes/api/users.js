@@ -17,14 +17,47 @@ module.exports = app => {
   });
 
   app.post("/api/users", function(req, res, next) {
-    if (!req.body.user) {
+    //console.log("req.files", req.files);
+    //console.log("req.body", req.body);
+    if (!req.body || !req.files) {
       return;
     }
-    let userRawData = req.body.user;
-    let NewUser = new User(userRawData);
-    NewUser.save()
-      .then(user => res.json(user))
-      .catch(err => next(err));
+    let userRawData = {
+      accountHolderName: req.body.accountHolderName,
+      email: req.body.email,
+      contact: req.body.contact,
+      password: req.body.password,
+      userType: req.body.userType,
+      gender: req.body.gender,
+      addressProof: {
+        type: req.body.addressProofType,
+        document: {}
+      },
+      idProof: {
+        type: req.body.idProofType,
+        document: {}
+      },
+      photo: {}
+    };
+    let promiseAddressProof = cloudinary.uploader.upload(
+      req.files["addressProof"]["path"]
+    );
+    let promiseIdProof = cloudinary.uploader.upload(
+      req.files["idProof"]["path"]
+    );
+    let promisePhoto = cloudinary.uploader.upload(req.files["photo"]["path"]);
+
+    Promise.all([promiseAddressProof, promiseIdProof, promisePhoto])
+      .then(results => {
+        userRawData.addressProof.document = results[0];
+        userRawData.idProof.document = results[1];
+        userRawData.photo = results[2];
+        let NewUser = new User(userRawData);
+        NewUser.save()
+          .then(user => res.json(user))
+          .catch(err => next(err));
+      })
+      .catch(err => res.status(400).json(err));
   });
   app.put("/api/users/:id", (req, res, next) => {
     if (!req.body.user) {

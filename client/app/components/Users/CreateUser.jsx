@@ -141,45 +141,85 @@ class CreateUser extends React.Component {
     let formIsValid = this.validateFields();
     if (formIsValid || this.state.formValid) {
       this.props.setLoaderStatus(true);
+      const formData = new FormData();
 
-      this.uploadImages()
-        .then(() => {
-          const obj = {
-            accountHolderName: this.state.fields.accountHolderName,
-            email: this.state.fields.email,
-            addressProof: this.state.fields.addressProof,
-            idProof: this.state.fields.idProof,
-            password: this.state.fields.password,
-            contact: this.state.fields.contact,
-            photo: this.state.fields.photo,
-            userType: this.state.fields.userType,
-            gender: this.state.fields.gender
-          };
-
-          fetch("/api/users/", {
-            method: "POST",
-            headers: {
-              "Content-type": "application/json; charset=UTF-8"
-            },
-            body: JSON.stringify({
-              user: obj
-            })
-          })
-            .then(response => {
-              return response.json();
-            })
-            .then(json => {
-              this.resetState();
-              this.props.setNotification({
-                type: "success",
-                message: "User Saved Successfully!!",
-                show: true
-              });
-              this.props.setLoaderStatus(false);
-            })
-            .catch(e => console.log(e));
+      for (let fieldName in this.state.fields) {
+        switch (fieldName) {
+          case "addressProof":
+            formData.append(
+              fieldName,
+              this.state.fields.addressProof.document.file
+            );
+            formData.append(
+              "addressProofType",
+              this.state.fields.addressProof.type
+            );
+            break;
+          case "idProof":
+            formData.append(fieldName, this.state.fields.idProof.document.file);
+            formData.append("idProofType", this.state.fields.idProof.type);
+            break;
+          case "photo":
+            formData.append(fieldName, this.state.fields.photo.file);
+            break;
+          default:
+            formData.append(fieldName, this.state.fields[fieldName]);
+            break;
+        }
+      }
+      fetch("/api/users", {
+        method: "POST",
+        body: formData
+      })
+        .then(res => res.json())
+        .then(json => {
+          this.resetState();
+          this.props.setNotification({
+            type: "success",
+            message: "User Saved Successfully!!",
+            show: true
+          });
+          this.props.setLoaderStatus(false);
         })
         .catch(e => console.log(e));
+      // this.uploadImages()
+      //   .then(() => {
+      //     const obj = {
+      //       accountHolderName: this.state.fields.accountHolderName,
+      //       email: this.state.fields.email,
+      //       addressProof: this.state.fields.addressProof,
+      //       idProof: this.state.fields.idProof,
+      //       password: this.state.fields.password,
+      //       contact: this.state.fields.contact,
+      //       photo: this.state.fields.photo,
+      //       userType: this.state.fields.userType,
+      //       gender: this.state.fields.gender
+      //     };
+
+      //     fetch("/api/users/", {
+      //       method: "POST",
+      //       headers: {
+      //         "Content-type": "application/json; charset=UTF-8"
+      //       },
+      //       body: JSON.stringify({
+      //         user: obj
+      //       })
+      //     })
+      //       .then(response => {
+      //         return response.json();
+      //       })
+      //       .then(json => {
+      //         this.resetState();
+      //         this.props.setNotification({
+      //           type: "success",
+      //           message: "User Saved Successfully!!",
+      //           show: true
+      //         });
+      //         this.props.setLoaderStatus(false);
+      //       })
+      //       .catch(e => console.log(e));
+      //   })
+      //   .catch(e => console.log(e));
     }
   };
 
