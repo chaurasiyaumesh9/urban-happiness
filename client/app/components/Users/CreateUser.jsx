@@ -1,85 +1,91 @@
 import React, { Component } from "react";
+import FormErrors from "../FormErrors/FormErrors";
 import axios from "axios";
 
 class CreateUser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      accountHolderName: "",
-      email: "",
-      addressProof: {
-        type: "",
-        document: {
+      fields: {
+        accountHolderName: "",
+        email: "",
+        addressProof: {
+          type: "",
+          document: {
+            url: "",
+            secure_url: ""
+          }
+        },
+        idProof: {
+          type: "",
+          document: {
+            url: "",
+            secure_url: ""
+          }
+        },
+        password: "",
+        confirmPassword: "",
+        contact: "",
+        photo: {
           url: "",
           secure_url: ""
-        }
+        },
+        userType: "",
+        gender: ""
       },
-      idProof: {
-        type: "",
-        document: {
-          url: "",
-          secure_url: ""
-        }
+      errors: {
+        accountHolderName: "",
+        email: "",
+        contact: "",
+        addressProof: "",
+        gender: "",
+        userType: "",
+        photo: "",
+        password: "",
+        idProof: "",
+        addressProof: ""
       },
-      password: "",
-      confirmPassword: "",
-      contact: "",
-      photo: {
-        url: "",
-        secure_url: ""
-      },
-      userType: "",
-      gender: ""
+      formValid: false
     };
   }
-  setUserProperties = userobj => {
-    this.setState({
-      accountHolderName: userobj.name,
-      email: userobj.email,
-      addressProof: userobj.addressProof,
-      idProof: userobj.idProof,
-      password: userobj.password,
-      confirmPassword: userobj.confirmPassword,
-      contact: userobj.contact,
-      photo: userobj.photo,
-      userType: userobj.type,
-      gender: userobj.gender
-    });
-  };
+
   resetState = () => {
-    this.setUserProperties({
-      accountHolderName: "",
-      email: "",
-      addressProof: {
-        type: "",
-        document: {
+    this.setState({
+      fields: {
+        accountHolderName: "",
+        email: "",
+        addressProof: {
+          type: "",
+          document: {
+            url: "",
+            secure_url: ""
+          }
+        },
+        idProof: {
+          type: "",
+          document: {
+            url: "",
+            secure_url: ""
+          }
+        },
+        password: "",
+        confirmPassword: "",
+        contact: "",
+        photo: {
           url: "",
           secure_url: ""
-        }
+        },
+        userType: "",
+        gender: ""
       },
-      idProof: {
-        type: "",
-        document: {
-          url: "",
-          secure_url: ""
-        }
-      },
-      password: "",
-      confirmPassword: "",
-      contact: "",
-      photo: {
-        url: "",
-        secure_url: ""
-      },
-      userType: "",
-      gender: ""
+      errors: {}
     });
   };
   uploadImages = () => {
     const formData = new FormData();
-    let addressProofFile = this.state.addressProof.document.file;
-    let idProofFile = this.state.idProof.document.file;
-    let photoFile = this.state.photo.file;
+    let addressProofFile = this.state.fields.addressProof.document.file;
+    let idProofFile = this.state.fields.idProof.document.file;
+    let photoFile = this.state.fields.photo.file;
     formData.append(0, addressProofFile);
     formData.append(1, idProofFile);
     formData.append(2, photoFile);
@@ -89,26 +95,30 @@ class CreateUser extends React.Component {
     })
       .then(res => res.json())
       .then(images => {
-        console.log("Images : ", images);
-
         this.setState(prevState => ({
-          addressProof: {
-            ...prevState.addressProof,
-            document: {
-              url: images[0]["url"],
-              secure_url: images[0]["secure_url"]
+          fields: {
+            ...prevState.fields,
+            addressProof: {
+              ...prevState.addressProof,
+              document: {
+                url: images[0]["url"],
+                secure_url: images[0]["secure_url"]
+              }
+            },
+            idProof: {
+              ...prevState.idProof,
+              document: {
+                url: images[1]["url"],
+                secure_url: images[1]["secure_url"]
+              }
+            },
+            photo: {
+              url: images[2]["url"],
+              secure_url: images[2]["secure_url"]
             }
           },
-          idProof: {
-            ...prevState.idProof,
-            document: {
-              url: images[1]["url"],
-              secure_url: images[1]["secure_url"]
-            }
-          },
-          photo: {
-            url: images[2]["url"],
-            secure_url: images[2]["secure_url"]
+          errors: {
+            ...prevState.errors
           }
         }));
       });
@@ -119,16 +129,16 @@ class CreateUser extends React.Component {
     this.uploadImages()
       .then(() => {
         const obj = {
-          accountHolderName: this.state.accountHolderName,
-          email: this.state.email,
-          addressProof: this.state.addressProof,
-          idProof: this.state.idProof,
-          password: this.state.password,
-          confirmPassword: this.state.confirmPassword,
-          contact: this.state.contact,
-          photo: this.state.photo,
-          userType: this.state.userType,
-          gender: this.state.gender
+          accountHolderName: this.state.fields.accountHolderName,
+          email: this.state.fields.email,
+          addressProof: this.state.fields.addressProof,
+          idProof: this.state.fields.idProof,
+          password: this.state.fields.password,
+          confirmPassword: this.state.fields.confirmPassword,
+          contact: this.state.fields.contact,
+          photo: this.state.fields.photo,
+          userType: this.state.fields.userType,
+          gender: this.state.fields.gender
         };
 
         fetch("/api/users/", {
@@ -164,12 +174,18 @@ class CreateUser extends React.Component {
 
     reader.onloadend = () => {
       this.setState(prevState => ({
-        addressProof: {
-          ...prevState.addressProof,
-          document: {
-            file: file,
-            url: reader.result
+        fields: {
+          ...prevState.fields,
+          addressProof: {
+            ...prevState.fields.addressProof,
+            document: {
+              file: file,
+              url: reader.result
+            }
           }
+        },
+        errors: {
+          ...prevState.errors
         }
       }));
     };
@@ -183,12 +199,18 @@ class CreateUser extends React.Component {
 
     reader.onloadend = () => {
       this.setState(prevState => ({
-        idProof: {
-          ...prevState.idProof,
-          document: {
-            file: file,
-            url: reader.result
+        fields: {
+          ...prevState.fields,
+          idProof: {
+            ...prevState.idProof,
+            document: {
+              file: file,
+              url: reader.result
+            }
           }
+        },
+        errors: {
+          ...prevState.errors
         }
       }));
     };
@@ -202,9 +224,15 @@ class CreateUser extends React.Component {
 
     reader.onloadend = () => {
       this.setState(prevState => ({
-        photo: {
-          file: file,
-          url: reader.result
+        fields: {
+          ...prevState.fields,
+          photo: {
+            file: file,
+            url: reader.result
+          }
+        },
+        errors: {
+          ...prevState.errors
         }
       }));
     };
@@ -213,34 +241,117 @@ class CreateUser extends React.Component {
   onAddressTypeChanged = e => {
     let updatedType = e.target.value;
     this.setState(prevState => ({
-      addressProof: {
-        type: updatedType
+      fields: {
+        ...prevState.fields,
+        addressProof: {
+          type: updatedType
+        }
+      },
+      errors: {
+        ...prevState.errors
       }
     }));
   };
   onIdTypeChanged = e => {
     let updatedType = e.target.value;
     this.setState(prevState => ({
-      idProof: {
-        type: updatedType
+      fields: {
+        ...prevState.fields,
+        idProof: {
+          type: updatedType
+        }
+      },
+      errors: {
+        ...prevState.errors
       }
     }));
   };
   handleUserInput = e => {
     const name = e.target.name;
     const value = e.target.value;
-    this.setState({ [name]: value });
+
+    this.setState(
+      prevState => ({
+        fields: {
+          ...prevState.fields,
+          [name]: value
+        },
+        errors: {
+          ...prevState.errors
+        }
+      }),
+      () => {
+        this.validateField(name, value);
+      }
+    );
   };
+  validateField = (fieldName, value) => {
+    let fieldValidationErrors = this.state.errors;
+
+    switch (fieldName) {
+      case "email":
+        if (value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
+          fieldValidationErrors.email = "";
+        } else {
+          fieldValidationErrors.email = "Email is invalid";
+        }
+        break;
+      case "accountHolderName":
+        if (value.trim().length >= 4) {
+          fieldValidationErrors.accountHolderName = "";
+        } else {
+          fieldValidationErrors.accountHolderName = "Name is too short";
+        }
+        break;
+      case "contact":
+        if (value.trim().length == 10) {
+          fieldValidationErrors.contact = "";
+        } else {
+          fieldValidationErrors.contact =
+            "Contact number should be of 10 digits";
+        }
+        if (value.match(/^[0-9]*$/i)) {
+          fieldValidationErrors.contact = "";
+        } else {
+          fieldValidationErrors.contact = "Only numbers are allowed";
+        }
+        break;
+      default:
+        break;
+    }
+    this.setState(
+      {
+        errors: fieldValidationErrors
+      },
+      this.validateForm
+    );
+  };
+  validateForm = () => {
+    const isEmpty = Object.values(this.state.errors).every(
+      x => x === null || x === ""
+    );
+
+    this.setState({
+      formValid: isEmpty
+    });
+  };
+  errorClass(error) {
+    return error.length === 0 ? "" : "is-invalid";
+  }
   render() {
     let $addressProofDocumentPreview = null,
       $idProofDocumentPreview = null,
       $photoPreview = null;
     if (
-      this.state.photo &&
-      (this.state.photo.url || this.state.photo.secure_url)
+      this.state.fields.photo &&
+      (this.state.fields.photo.url || this.state.fields.photo.secure_url)
     ) {
       $photoPreview = (
-        <img src={this.state.photo.secure_url || this.state.photo.url} />
+        <img
+          src={
+            this.state.fields.photo.secure_url || this.state.fields.photo.url
+          }
+        />
       );
     } else {
       $photoPreview = (
@@ -250,15 +361,15 @@ class CreateUser extends React.Component {
       );
     }
     if (
-      this.state.addressProof.document &&
-      (this.state.addressProof.document.url ||
-        this.state.addressProof.document.secure_url)
+      this.state.fields.addressProof.document &&
+      (this.state.fields.addressProof.document.url ||
+        this.state.fields.addressProof.document.secure_url)
     ) {
       $addressProofDocumentPreview = (
         <img
           src={
-            this.state.addressProof.document.secure_url ||
-            this.state.addressProof.document.url
+            this.state.fields.addressProof.document.secure_url ||
+            this.state.fields.addressProof.document.url
           }
         />
       );
@@ -270,15 +381,15 @@ class CreateUser extends React.Component {
       );
     }
     if (
-      this.state.idProof.document &&
-      (this.state.idProof.document.url ||
-        this.state.idProof.document.secure_url)
+      this.state.fields.idProof.document &&
+      (this.state.fields.idProof.document.url ||
+        this.state.fields.idProof.document.secure_url)
     ) {
       $idProofDocumentPreview = (
         <img
           src={
-            this.state.idProof.document.secure_url ||
-            this.state.idProof.document.url
+            this.state.fields.idProof.document.secure_url ||
+            this.state.fields.idProof.document.url
           }
         />
       );
@@ -292,7 +403,7 @@ class CreateUser extends React.Component {
 
     let htmlAddressProof = null,
       htmlIdProof = null;
-    if (this.state.addressProof.type != "") {
+    if (this.state.fields.addressProof.type != "") {
       htmlAddressProof = (
         <div className="col-sm-8">
           <div className="row">
@@ -300,7 +411,7 @@ class CreateUser extends React.Component {
               <div className="form-group">
                 <label className="col-form-label" htmlFor="file-addressproof">
                   {" "}
-                  Photo copy of {this.state.addressProof.type}
+                  Photo copy of {this.state.fields.addressProof.type}
                 </label>
                 <div className="input-group mb-3">
                   <div className="custom-file">
@@ -327,7 +438,7 @@ class CreateUser extends React.Component {
         </div>
       );
     }
-    if (this.state.idProof.type != "") {
+    if (this.state.fields.idProof.type != "") {
       htmlIdProof = (
         <div className="col-sm-8">
           <div className="row">
@@ -335,7 +446,7 @@ class CreateUser extends React.Component {
               <div className="form-group">
                 <label className="col-form-label" htmlFor="file-idproof">
                   {" "}
-                  Photo copy of {this.state.idProof.type}
+                  Photo copy of {this.state.fields.idProof.type}
                 </label>
                 <div className="input-group mb-3">
                   <div className="custom-file">
@@ -366,6 +477,9 @@ class CreateUser extends React.Component {
           CREATE NEW USER ACCOUNT{" "}
         </h4>
         <form onSubmit={this.onSubmit}>
+          {/* <div className="panel panel-default">
+            <FormErrors formErrors={this.state.errors} />
+          </div> */}
           <div className="row">
             <div className="col-sm-4">
               <div className="form-group">
@@ -374,13 +488,18 @@ class CreateUser extends React.Component {
                   Name
                 </label>
                 <input
-                  className="form-control"
+                  className={`form-control ${this.errorClass(
+                    this.state.errors.accountHolderName
+                  )}`}
                   type="text"
                   name="accountHolderName"
                   id="accountHolderName"
-                  value={this.state.accountHolderName || ""}
+                  value={this.state.fields.accountHolderName || ""}
                   onChange={event => this.handleUserInput(event)}
                 />
+                <span className="error">
+                  {this.state.errors.accountHolderName}
+                </span>
               </div>
             </div>
             <div className="col-sm-4">
@@ -390,13 +509,16 @@ class CreateUser extends React.Component {
                   Email{" "}
                 </label>
                 <input
-                  className="form-control"
+                  className={`form-control ${this.errorClass(
+                    this.state.errors.email
+                  )}`}
                   type="text"
                   name="email"
                   id="email"
-                  value={this.state.email || ""}
+                  value={this.state.fields.email || ""}
                   onChange={event => this.handleUserInput(event)}
                 />
+                <span className="error">{this.state.errors.email}</span>
               </div>
             </div>
             <div className="col-sm-4">
@@ -405,14 +527,17 @@ class CreateUser extends React.Component {
                   Contact
                 </label>
                 <input
-                  className="form-control"
+                  className={`form-control ${this.errorClass(
+                    this.state.errors.contact
+                  )}`}
                   type="text"
                   name="contact"
                   id="contact"
-                  value={this.state.contact || ""}
+                  value={this.state.fields.contact || ""}
                   maxLength="11"
                   onChange={event => this.handleUserInput(event)}
                 />
+                <span className="error">{this.state.errors.contact}</span>
               </div>
             </div>
           </div>
@@ -427,7 +552,7 @@ class CreateUser extends React.Component {
                   className="form-control"
                   name="userType"
                   id="userType"
-                  value={this.state.userType || ""}
+                  value={this.state.fields.userType || ""}
                   onChange={event => this.handleUserInput(event)}
                 >
                   <option value="admin">ADMIN</option>
@@ -447,7 +572,7 @@ class CreateUser extends React.Component {
                   type="password"
                   name="password"
                   id="password"
-                  value={this.state.password || ""}
+                  value={this.state.fields.password || ""}
                   onChange={event => this.handleUserInput(event)}
                 />
               </div>
@@ -462,7 +587,7 @@ class CreateUser extends React.Component {
                   type="password"
                   name="confirmPassword"
                   id="confirmPassword"
-                  value={this.state.confirmPassword || ""}
+                  value={this.state.fields.confirmPassword || ""}
                   onChange={event => this.handleUserInput(event)}
                 />
               </div>
@@ -482,7 +607,7 @@ class CreateUser extends React.Component {
                   className="form-control"
                   name="dropdown-addressType"
                   id="dropdown-addressType"
-                  value={this.state.addressProof.type || ""}
+                  value={this.state.fields.addressProof.type || ""}
                   onChange={this.onAddressTypeChanged}
                 >
                   <option value="aadhar-card">AADHAR CARD</option>
@@ -509,7 +634,7 @@ class CreateUser extends React.Component {
                   className="form-control"
                   name="dropdown-idType"
                   id="dropdown-idType"
-                  value={this.state.idProof.type || ""}
+                  value={this.state.fields.idProof.type || ""}
                   onChange={this.onIdTypeChanged}
                 >
                   <option value="aadhar-card">AADHAR CARD</option>
@@ -567,7 +692,7 @@ class CreateUser extends React.Component {
                     name="gender"
                     id="rdo-male"
                     value="Male"
-                    checked={this.state.gender === "Male"}
+                    checked={this.state.fields.gender === "Male"}
                     onChange={event => this.handleUserInput(event)}
                   />
                   <label className="form-check-label" htmlFor="rdo-male">
@@ -581,7 +706,7 @@ class CreateUser extends React.Component {
                     name="gender"
                     id="rdo-female"
                     value="Female"
-                    checked={this.state.gender === "Female"}
+                    checked={this.state.fields.gender === "Female"}
                     onChange={event => this.handleUserInput(event)}
                   />
                   <label className="form-check-label" htmlFor="rdo-female">
@@ -591,7 +716,11 @@ class CreateUser extends React.Component {
               </div>
             </div>
           </div>
-          <button className="btn btn-sm btn-primary mr-1" type="submit">
+          <button
+            disabled={!this.state.formValid}
+            className="btn btn-sm btn-primary mr-1"
+            type="submit"
+          >
             SUBMIT
           </button>
           <button
