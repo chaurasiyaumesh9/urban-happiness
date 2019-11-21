@@ -2,6 +2,8 @@ import React, { Component, Fragment } from "react";
 import { withRouter, Route, Switch } from "react-router-dom";
 
 import Notifications from "../Notifications/Notifications";
+import Loader from "../Loader/Loader";
+
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import Routes from "../../routes";
@@ -11,6 +13,9 @@ class Container extends Component {
     notification: {
       type: null,
       message: null,
+      show: false
+    },
+    loader: {
       show: false
     }
   };
@@ -32,6 +37,14 @@ class Container extends Component {
       }
     });
   };
+  toggleLoader = flag => {
+    this.setState({
+      loader: {
+        show: flag
+      }
+    });
+  };
+
   render() {
     return (
       <Fragment>
@@ -42,10 +55,14 @@ class Container extends Component {
             closeHandler={() => this.closeNotification()}
           />
         )}
+        {this.state.loader.show && <Loader loader={this.state.loader} />}
         <Switch>
           <Route
             render={props => (
-              <Routes setNotification={this.modifyNotification} />
+              <Routes
+                setNotification={this.modifyNotification}
+                setLoaderStatus={this.toggleLoader}
+              />
             )}
           />
         </Switch>

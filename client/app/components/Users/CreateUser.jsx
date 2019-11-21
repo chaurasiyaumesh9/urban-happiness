@@ -122,35 +122,26 @@ class CreateUser extends React.Component {
           fields: {
             ...prevState.fields,
             addressProof: {
-              ...prevState.addressProof,
-              document: {
-                url: images[0]["url"],
-                secure_url: images[0]["secure_url"]
-              }
+              ...prevState.fields.addressProof,
+              document: images[0]
             },
             idProof: {
-              ...prevState.idProof,
-              document: {
-                url: images[1]["url"],
-                secure_url: images[1]["secure_url"]
-              }
+              ...prevState.fields.idProof,
+              document: images[1]
             },
-            photo: {
-              url: images[2]["url"],
-              secure_url: images[2]["secure_url"]
-            }
-          },
-          errors: {
-            ...prevState.errors
+            photo: images[2]
           }
         }));
       });
   };
+
   onSubmit = e => {
     e.preventDefault();
 
     let formIsValid = this.validateFields();
     if (formIsValid || this.state.formValid) {
+      this.props.setLoaderStatus(true);
+
       this.uploadImages()
         .then(() => {
           const obj = {
@@ -159,7 +150,6 @@ class CreateUser extends React.Component {
             addressProof: this.state.fields.addressProof,
             idProof: this.state.fields.idProof,
             password: this.state.fields.password,
-            confirmPassword: this.state.fields.confirmPassword,
             contact: this.state.fields.contact,
             photo: this.state.fields.photo,
             userType: this.state.fields.userType,
@@ -185,6 +175,7 @@ class CreateUser extends React.Component {
                 message: "User Saved Successfully!!",
                 show: true
               });
+              this.props.setLoaderStatus(false);
             })
             .catch(e => console.log(e));
         })

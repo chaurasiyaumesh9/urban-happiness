@@ -6,28 +6,40 @@ import Categories from "./components/Categories/Categories";
 import UsersList from "./components/Users/UsersList";
 import CreateUser from "./components/Users/CreateUser";
 import EditUser from "./components/Users/EditUser";
-const Routes = ({ setNotification }) => (
+const Routes = ({ setNotification, setLoaderStatus }) => (
   <Switch>
     <Route exact path="/" component={Home} />
     <Route
       exact
       path="/users"
-      component={props => (
-        <UsersList {...props} setNotification={setNotification} />
+      render={props => (
+        <UsersList
+          {...props}
+          setNotification={setNotification}
+          setLoaderStatus={setLoaderStatus}
+        />
       )}
     />
     <Route
       exact
       path="/users/create"
-      component={props => (
-        <CreateUser {...props} setNotification={setNotification} />
+      render={props => (
+        <CreateUser
+          {...props}
+          setNotification={setNotification}
+          setLoaderStatus={setLoaderStatus}
+        />
       )}
     />
     <Route
       exact
       path="/users/:id"
-      component={props => (
-        <EditUser {...props} setNotification={setNotification} />
+      render={props => (
+        <EditUser
+          {...props}
+          setNotification={setNotification}
+          setLoaderStatus={setLoaderStatus}
+        />
       )}
     />
     <Route exact path="/categories" component={Categories} />

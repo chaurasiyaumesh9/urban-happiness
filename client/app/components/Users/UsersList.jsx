@@ -11,6 +11,7 @@ class UsersList extends React.Component {
   }
   deleteUser = userid => {
     if (!userid) return;
+    this.props.setLoaderStatus(true);
     fetch("/api/users/" + userid, {
       method: "DELETE",
       headers: {
@@ -24,6 +25,8 @@ class UsersList extends React.Component {
           message: "Record Deleted Successfully!!",
           show: true
         });
+        this.props.setLoaderStatus(false);
+        this.fetchUsersList();
       })
       .catch(e => console.log(e));
   };

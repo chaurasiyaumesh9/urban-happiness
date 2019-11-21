@@ -1,4 +1,5 @@
 const User = require("../../models/User");
+const cloudinary = require("cloudinary");
 
 module.exports = app => {
   app.get("/api/users", (req, res, next) => {
@@ -40,15 +41,34 @@ module.exports = app => {
   });
 
   app.delete("/api/users/:id", function(req, res, next) {
-    User.findOneAndRemove({ _id: req.params.id })
+    User.findById(req.params.id)
       .exec()
-      .then(() => {
-        res.json({});
-        // User.find()
-        //   .exec()
-        //   .then(users => res.json(users))
-        //   .catch(err => next(err));
-      })
-      .catch(err => next(err));
+      .then(user => {
+        let values = [
+          user.addressProof.document.public_id,
+          user.idProof.document.public_id,
+          user.photo.public_id
+        ];
+        const promises = values.map(publicid =>
+          cloudinary.uploader.destroy(publicid)
+        );
+        Promise.all(promises)
+          .then(results => {
+            User.findOneAndRemove({ _id: user._id })
+              .exec()
+              .then(() => {
+                res.json({});
+              })
+              .catch(err => next(err));
+          })
+          .catch(err => res.status(400).json(err));
+      });
+
+    // User.findOneAndRemove({ _id: req.params.id })
+    //   .exec()
+    //   .then(() => {
+    //     res.json({});
+    //   })
+    //   .catch(err => next(err));
   });
 };
