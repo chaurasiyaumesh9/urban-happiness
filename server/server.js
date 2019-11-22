@@ -10,7 +10,7 @@ const formData = require("express-form-data");
 const cloudinary = require("cloudinary");
 
 const webpackConfig = require("../webpack.config");
-const config = require(".././config/config");
+const config = require("./server-config/config");
 
 const isDev = process.env.NODE_ENV !== "production";
 const port = process.env.PORT || 8080;
