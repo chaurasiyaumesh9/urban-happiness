@@ -17,8 +17,6 @@ module.exports = app => {
   });
 
   app.post("/api/users", function(req, res, next) {
-    //console.log("req.files", req.files);
-    //console.log("req.body", req.body);
     if (!req.body || !req.files) {
       return;
     }
@@ -60,17 +58,88 @@ module.exports = app => {
       .catch(err => res.status(400).json(err));
   });
   app.put("/api/users/:id", (req, res, next) => {
-    if (!req.body.user) {
+    if (!req.body) {
       return;
     }
-    let updatedUser = req.body.user;
-    User.findOneAndUpdate(
-      { _id: req.params.id },
-      { $set: updatedUser },
-      { new: true, useFindAndModify: false }
-    )
-      .then(user => res.json(user))
-      .catch(err => next(err));
+    let userRawData = {
+      accountHolderName: req.body.accountHolderName,
+      email: req.body.email,
+      contact: req.body.contact,
+      password: req.body.password,
+      userType: req.body.userType,
+      gender: req.body.gender,
+      addressProof: {
+        type: req.body.addressProofType
+      },
+      idProof: {
+        type: req.body.idProofType
+      },
+      photo: {}
+    };
+
+    let promises = [];
+
+    User.findById(req.params.id)
+      .exec()
+      .then(user => {
+        if (req.files["addressProof"]) {
+          promises.push(
+            cloudinary.uploader
+              .upload(req.files["addressProof"]["path"])
+              .then(result => {
+                userRawData.addressProof["document"] = result;
+              })
+          );
+          promises.push(
+            cloudinary.uploader.destroy(user.addressProof.document["public_id"])
+          );
+        } else {
+          userRawData.addressProof["document"] = JSON.parse(
+            req.body.addressProof
+          );
+        }
+        if (req.files["idProof"]) {
+          promises.push(
+            cloudinary.uploader
+              .upload(req.files["idProof"]["path"])
+              .then(result => {
+                userRawData.idProof["document"] = result;
+              })
+          );
+          promises.push(
+            cloudinary.uploader.destroy(user.idProof.document["public_id"])
+          );
+        } else {
+          userRawData.idProof["document"] = JSON.parse(req.body.idProof);
+        }
+        if (req.files["photo"]) {
+          promises.push(
+            cloudinary.uploader
+              .upload(req.files["photo"]["path"])
+              .then(result => {
+                userRawData.photo = result;
+              })
+          );
+          promises.push(cloudinary.uploader.destroy(user.photo["public_id"]));
+        } else {
+          userRawData.photo = JSON.parse(req.body.photo);
+        }
+        Promise.all(promises)
+          .then(() => {
+            //console.log("then userRawData", userRawData);
+          })
+          .finally(() => {
+            //console.log("finally userRawData", userRawData);
+            User.findOneAndUpdate(
+              { _id: req.params.id },
+              { $set: userRawData },
+              { new: true, useFindAndModify: false }
+            )
+              .then(user => res.json(user))
+              .catch(err => next(err));
+          })
+          .catch(err => res.status(400).json(err));
+      });
   });
 
   app.delete("/api/users/:id", function(req, res, next) {

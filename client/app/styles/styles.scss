@@ -13,7 +13,7 @@ $primary: #1976d2;
   img {
     max-width: 100%;
     height: auto;
-    max-height: 380px;
+    max-height: 216px;
     margin: 10px;
   }
 }
@@ -62,7 +62,10 @@ $primary: #1976d2;
     }
   }
 }
-
+.was-validated .form-control:invalid,
+.form-control.is-invalid {
+  background: none;
+}
 @keyframes sk-scaleout {
   0% {
     -webkit-transform: scale(0);

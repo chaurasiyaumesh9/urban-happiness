@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import FormErrors from "../FormErrors/FormErrors";
 import axios from "axios";
 
-class CreateUser extends React.Component {
+class UserForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -51,10 +51,32 @@ class CreateUser extends React.Component {
           document: ""
         }
       },
-      formValid: false
+      formValid: false,
+      editMode: this.props.match.params.id ? true : false
     };
   }
-
+  componentDidMount() {
+    if (this.props.match.params.id) {
+      fetch("/api/users/" + this.props.match.params.id)
+        .then(res => res.json())
+        .then(json => {
+          this.setState({
+            fields: {
+              accountHolderName: json.accountHolderName,
+              email: json.email,
+              addressProof: json.addressProof,
+              idProof: json.idProof,
+              password: json.password,
+              confirmPassword: json.confirmPassword,
+              contact: json.contact,
+              photo: json.photo,
+              userType: json.userType,
+              gender: json.gender
+            }
+          });
+        });
+    }
+  }
   resetState = () => {
     this.setState({
       fields: {
@@ -101,40 +123,11 @@ class CreateUser extends React.Component {
           type: "",
           document: ""
         }
-      }
+      },
+      formValid: false,
+      editMode: this.props.match.params.id ? true : false
     });
   };
-  uploadImages = () => {
-    const formData = new FormData();
-    let addressProofFile = this.state.fields.addressProof.document.file;
-    let idProofFile = this.state.fields.idProof.document.file;
-    let photoFile = this.state.fields.photo.file;
-    formData.append(0, addressProofFile);
-    formData.append(1, idProofFile);
-    formData.append(2, photoFile);
-    return fetch("/api/image-upload", {
-      method: "POST",
-      body: formData
-    })
-      .then(res => res.json())
-      .then(images => {
-        this.setState(prevState => ({
-          fields: {
-            ...prevState.fields,
-            addressProof: {
-              ...prevState.fields.addressProof,
-              document: images[0]
-            },
-            idProof: {
-              ...prevState.fields.idProof,
-              document: images[1]
-            },
-            photo: images[2]
-          }
-        }));
-      });
-  };
-
   onSubmit = e => {
     e.preventDefault();
 
@@ -142,85 +135,105 @@ class CreateUser extends React.Component {
     if (formIsValid || this.state.formValid) {
       this.props.setLoaderStatus(true);
       const formData = new FormData();
-
       for (let fieldName in this.state.fields) {
         switch (fieldName) {
           case "addressProof":
-            formData.append(
-              fieldName,
-              this.state.fields.addressProof.document.file
-            );
+            if (
+              !this.state.editMode ||
+              this.state.fields.addressProof.document.hasOwnProperty("file")
+            ) {
+              formData.append(
+                fieldName,
+                this.state.fields.addressProof.document.file
+              );
+            } else {
+              formData.append(
+                fieldName,
+                JSON.stringify(this.state.fields.addressProof.document)
+              );
+            }
+
             formData.append(
               "addressProofType",
               this.state.fields.addressProof.type
             );
             break;
           case "idProof":
-            formData.append(fieldName, this.state.fields.idProof.document.file);
+            if (
+              !this.state.editMode ||
+              this.state.fields.idProof.document.hasOwnProperty("file")
+            ) {
+              formData.append(
+                fieldName,
+                this.state.fields.idProof.document.file
+              );
+            } else {
+              formData.append(
+                fieldName,
+                JSON.stringify(this.state.fields.idProof.document)
+              );
+            }
             formData.append("idProofType", this.state.fields.idProof.type);
             break;
           case "photo":
-            formData.append(fieldName, this.state.fields.photo.file);
+            if (
+              !this.state.editMode ||
+              this.state.fields.photo.hasOwnProperty("file")
+            ) {
+              formData.append(fieldName, this.state.fields.photo.file);
+            } else {
+              formData.append(
+                fieldName,
+                JSON.stringify(this.state.fields.photo)
+              );
+            }
             break;
           default:
             formData.append(fieldName, this.state.fields[fieldName]);
             break;
         }
       }
-      fetch("/api/users", {
-        method: "POST",
-        body: formData
-      })
-        .then(res => res.json())
-        .then(json => {
-          this.resetState();
-          this.props.setNotification({
-            type: "success",
-            message: "User Saved Successfully!!",
-            show: true
-          });
-          this.props.setLoaderStatus(false);
-        })
-        .catch(e => console.log(e));
-      // this.uploadImages()
-      //   .then(() => {
-      //     const obj = {
-      //       accountHolderName: this.state.fields.accountHolderName,
-      //       email: this.state.fields.email,
-      //       addressProof: this.state.fields.addressProof,
-      //       idProof: this.state.fields.idProof,
-      //       password: this.state.fields.password,
-      //       contact: this.state.fields.contact,
-      //       photo: this.state.fields.photo,
-      //       userType: this.state.fields.userType,
-      //       gender: this.state.fields.gender
-      //     };
-
-      //     fetch("/api/users/", {
-      //       method: "POST",
-      //       headers: {
-      //         "Content-type": "application/json; charset=UTF-8"
-      //       },
-      //       body: JSON.stringify({
-      //         user: obj
-      //       })
-      //     })
-      //       .then(response => {
-      //         return response.json();
-      //       })
-      //       .then(json => {
-      //         this.resetState();
-      //         this.props.setNotification({
-      //           type: "success",
-      //           message: "User Saved Successfully!!",
-      //           show: true
-      //         });
-      //         this.props.setLoaderStatus(false);
-      //       })
-      //       .catch(e => console.log(e));
-      //   })
-      //   .catch(e => console.log(e));
+      if (this.state.editMode) {
+        this.updateExistingUser(formData);
+      } else {
+        this.createNewUser(formData);
+      }
     }
+  };
+  updateExistingUser = formData => {
+    fetch("/api/users/" + this.props.match.params.id, {
+      method: "PUT",
+      body: formData
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(json => {
+        this.props.setNotification({
+          type: "success",
+          message: "User updated successfully!!",
+          show: true
+        });
+        this.props.setLoaderStatus(false);
+      })
+      .catch(e => console.log(e));
+  };
+  createNewUser = formData => {
+    fetch("/api/users", {
+      method: "POST",
+      body: formData
+    })
+      .then(res => res.json())
+      .then(json => {
+        this.resetState();
+        this.props.setNotification({
+          type: "success",
+          message: "User Created Successfully!!",
+          show: true
+        });
+        this.props.setLoaderStatus(false);
+      })
+      .catch(e => console.log(e));
   };
 
   handleAddressProofImageChange = e => {
@@ -351,14 +364,14 @@ class CreateUser extends React.Component {
       switch (fieldName) {
         case "accountHolderName":
           fieldValidationErrors.accountHolderName = "";
-          if (value.trim().length < 4) {
+          if (value.toString().trim().length < 4) {
             fieldValidationErrors.accountHolderName = "Name is too short";
             formIsValid = false;
           }
           break;
         case "gender":
           fieldValidationErrors.gender = "";
-          if (value.trim() == "") {
+          if (value.toString().trim() == "") {
             fieldValidationErrors.gender = "Please select gender";
             formIsValid = false;
           }
@@ -372,26 +385,26 @@ class CreateUser extends React.Component {
           break;
         case "contact":
           fieldValidationErrors.contact = "";
-          if (value.trim().length < 10) {
+          if (value.toString().trim().length < 10) {
             fieldValidationErrors.contact =
               "Contact number should be of 10 digits";
             formIsValid = false;
           }
-          if (!value.match(/^[0-9]*$/i)) {
+          if (!value.toString().match(/^[0-9]*$/i)) {
             fieldValidationErrors.contact = "Only numbers are allowed";
             formIsValid = false;
           }
           break;
         case "userType":
           fieldValidationErrors.userType = "";
-          if (value.trim() == "") {
+          if (value.toString().trim() == "") {
             fieldValidationErrors.userType = "Please choose user's role";
             formIsValid = false;
           }
           break;
         case "password":
           fieldValidationErrors.password = "";
-          if (value.trim().length < 6) {
+          if (value.toString().trim().length < 6) {
             fieldValidationErrors.password =
               "Password should be minimum of 6 characters";
             formIsValid = false;
@@ -399,16 +412,19 @@ class CreateUser extends React.Component {
           break;
         case "confirmPassword":
           fieldValidationErrors.confirmPassword = "";
-          if (value.trim() != this.state.fields.password.trim()) {
-            fieldValidationErrors.confirmPassword =
-              "Not matching with password";
-            formIsValid = false;
+          if (!this.state.editMode) {
+            if (value.toString().trim() != this.state.fields.password.trim()) {
+              fieldValidationErrors.confirmPassword =
+                "Not matching with password";
+              formIsValid = false;
+            }
           }
+
           break;
         case "addressProof":
           fieldValidationErrors.addressProof.type = "";
           fieldValidationErrors.addressProof.document = "";
-          if (value.type.trim() == "") {
+          if (value.type.toString().trim() == "") {
             fieldValidationErrors.addressProof.type =
               "Please choose document type";
             formIsValid = false;
@@ -417,7 +433,7 @@ class CreateUser extends React.Component {
             value.document.url == "" &&
             !value.document.file &&
             value.document.secure_url == "" &&
-            value.type.trim() != ""
+            value.type.toString().trim() != ""
           ) {
             fieldValidationErrors.addressProof.document = "Please upload image";
             formIsValid = false;
@@ -426,7 +442,7 @@ class CreateUser extends React.Component {
         case "idProof":
           fieldValidationErrors.idProof.type = "";
           fieldValidationErrors.idProof.document = "";
-          if (value.type.trim() == "") {
+          if (value.type.toString().trim() == "") {
             fieldValidationErrors.idProof.type = "Please choose document type";
             formIsValid = false;
           }
@@ -434,7 +450,7 @@ class CreateUser extends React.Component {
             value.document.url == "" &&
             !value.document.file &&
             value.document.secure_url == "" &&
-            value.type.trim() != ""
+            value.type.toString().trim() != ""
           ) {
             fieldValidationErrors.idProof.document = "Please upload image";
             formIsValid = false;
@@ -813,10 +829,7 @@ class CreateUser extends React.Component {
           <div className="row">
             <div className="col-sm-4">
               <div className="form-group">
-                <label className="col-form-label" htmlFor="file-user-photo">
-                  {" "}
-                  Upload Photo
-                </label>
+                <label className="col-form-label"> Upload Photo</label>
                 <div className="input-group">
                   <div className="custom-file">
                     <input
@@ -892,4 +905,4 @@ class CreateUser extends React.Component {
     );
   }
 }
-export default CreateUser;
+export default UserForm;

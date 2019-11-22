@@ -22,7 +22,7 @@ class UsersList extends React.Component {
       .then(json => {
         this.props.setNotification({
           type: "success",
-          message: "Record Deleted Successfully!!",
+          message: "User Deleted Successfully!!",
           show: true
         });
         this.props.setLoaderStatus(false);
@@ -102,10 +102,10 @@ class UsersList extends React.Component {
                   EMAIL
                 </th>
                 <th className="text-left" scope="col">
-                  USER ROLE
+                  ROLE
                 </th>
                 <th className="text-left" scope="col">
-                  USER PHOTO
+                  PHOTO
                 </th>
                 <th className="text-right" scope="col">
                   {" "}
@@ -121,7 +121,7 @@ class UsersList extends React.Component {
       userTable = (
         <div className="no-data text-center">
           <hr />
-          <h4 className="title text-center mt-4 mb-4"> NO DATA FOUND!! </h4>
+          <h4 className="title text-center mt-4 mb-4"> NO USER FOUND!! </h4>
         </div>
       );
     }

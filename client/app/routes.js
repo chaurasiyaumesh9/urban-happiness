@@ -4,8 +4,7 @@ import NotFound from "./components/App/NotFound";
 import Home from "./components/Home/Home";
 import Categories from "./components/Categories/Categories";
 import UsersList from "./components/Users/UsersList";
-import CreateUser from "./components/Users/CreateUser";
-import EditUser from "./components/Users/EditUser";
+import UserForm from "./components/Users/UserForm";
 const Routes = ({ setNotification, setLoaderStatus }) => (
   <Switch>
     <Route exact path="/" component={Home} />
@@ -24,7 +23,7 @@ const Routes = ({ setNotification, setLoaderStatus }) => (
       exact
       path="/users/create"
       render={props => (
-        <CreateUser
+        <UserForm
           {...props}
           setNotification={setNotification}
           setLoaderStatus={setLoaderStatus}
@@ -35,7 +34,7 @@ const Routes = ({ setNotification, setLoaderStatus }) => (
       exact
       path="/users/:id"
       render={props => (
-        <EditUser
+        <UserForm
           {...props}
           setNotification={setNotification}
           setLoaderStatus={setLoaderStatus}
