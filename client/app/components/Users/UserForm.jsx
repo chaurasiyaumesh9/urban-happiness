@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import FormErrors from "../FormErrors/FormErrors";
-import axios from "axios";
 
 class UserForm extends React.Component {
   constructor(props) {
