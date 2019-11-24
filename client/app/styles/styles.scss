@@ -77,3 +77,29 @@ $primary: #1976d2;
     transform: scale(1);
   }
 }
+.user-details {
+  .field-icon {
+    padding: 0 15px 0 0;
+  }
+}
+.users-list-wrapper {
+  .users-list {
+    &.browser {
+      @include media-breakpoint-down(sm) {
+        display: none;
+      }
+      @include media-breakpoint-up(md) {
+        display: block;
+      }
+    }
+
+    &.mobile {
+      @include media-breakpoint-down(sm) {
+        display: block;
+      }
+      @include media-breakpoint-up(md) {
+        display: none;
+      }
+    }
+  }
+}
