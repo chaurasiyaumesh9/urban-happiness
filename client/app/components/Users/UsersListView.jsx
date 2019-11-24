@@ -9,7 +9,7 @@ const UsersListView = props => (
           <div className="row" key={i}>
             <div className="col-sm-12 col-sm-6">
               <div className="card bg-light">
-                <div class="card-header text-center">
+                <div className="card-header text-center">
                   {" "}
                   {user.accountHolderName} <b>[*{user.userType}]</b>
                 </div>

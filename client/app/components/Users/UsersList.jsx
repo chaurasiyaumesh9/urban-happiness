@@ -33,12 +33,14 @@ class UsersList extends React.Component {
   };
 
   fetchUsersList = () => {
+    this.props.setLoaderStatus(true);
     fetch("/api/users")
       .then(res => res.json())
       .then(json => {
         this.setState({
           users: json
         });
+        this.props.setLoaderStatus(false);
       });
   };
   componentDidMount() {
