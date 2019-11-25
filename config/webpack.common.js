@@ -28,13 +28,39 @@ module.exports = {
 
   module: {
     rules: [
+      //IMAGES
+      {
+        test: /\.(jpe?g|png|gif)$/,
+        loader: "url-loader",
+        options: {
+          // Inline files smaller than 10 kB (10240 bytes)
+          limit: 10 * 1024
+        }
+      },
+      //SVG's
+      {
+        test: /\.svg$/,
+        loader: "svg-url-loader",
+        options: {
+          // Inline files smaller than 10 kB (10240 bytes)
+          limit: 10 * 1024,
+          // Remove the quotes from the url
+          // (they’re unnecessary in most cases)
+          noquotes: true
+        }
+      },
       // JS files
       {
         test: /\.jsx?$/,
         include: helpers.root("client"),
         loader: "babel-loader"
       },
-
+      {
+        test: /\.(jpe?g|png|gif|svg)$/,
+        loader: "image-webpack-loader",
+        // This will apply the loader before the other ones
+        enforce: "pre"
+      },
       // SCSS files
       {
         test: /\.scss$/,
@@ -44,8 +70,9 @@ module.exports = {
             {
               loader: "css-loader",
               options: {
-                sourceMap: true,
-                importLoaders: 1
+                sourceMap: false,
+                importLoaders: 1,
+                minimize: true
               }
             },
             {

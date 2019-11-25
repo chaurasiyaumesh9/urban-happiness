@@ -12,6 +12,7 @@
   "scripts": {
     "heroku-postbuild": "webpack -p --progress --profile --colors && node server",
     "start": "webpack -p --progress --profile --colors && node server",
+    "webpack": "webpack --profile --mode=production",
     "start:dev": "node server"
   },
   "engines": {
@@ -56,6 +57,7 @@
     "sass-loader": "^6.0.7",
     "style-loader": "^0.20.3",
     "uglifyjs-webpack-plugin": "2.2.0",
+    "terser-webpack-plugin": "latest",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-dev-middleware": "^3.0.1",
