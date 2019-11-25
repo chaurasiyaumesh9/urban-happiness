@@ -28,6 +28,7 @@
     "@fortawesome/free-brands-svg-icons": "5.11.2",
     "@fortawesome/free-regular-svg-icons": "5.11.2",
     "@fortawesome/free-solid-svg-icons": "5.11.2",
+    "assets-webpack-plugin": "3.9.10",
     "autoprefixer": "^8.2.0",
     "axios": "0.19.0",
     "babel-loader": "^8.0.0-beta.2",
@@ -60,7 +61,11 @@
     "webpack-cli": "^3.3.10",
     "webpack-dev-middleware": "^3.0.1",
     "webpack-hot-middleware": "^2.21.2",
+    "webpack-md5-hash": "0.0.6",
     "webpack-merge": "^4.1.2",
     "whatwg-fetch": "^2.0.3"
+  },
+  "devDependencies": {
+    "webpack-bundle-analyzer": "3.6.0"
   }
 }

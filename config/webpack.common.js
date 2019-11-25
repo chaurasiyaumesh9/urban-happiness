@@ -3,15 +3,26 @@ const autoprefixer = require("autoprefixer");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
+const path = require("path");
 const helpers = require("./helpers");
 
 const NODE_ENV = process.env.NODE_ENV;
 const isProd = NODE_ENV === "production";
+const pkg = require("../package.json");
 
 module.exports = {
   entry: {
-    app: [helpers.root("client/app/index.js")]
+    app: [helpers.root("client/app/index.js")],
+    react: ["react", "react-dom", "react-router-dom"],
+    bootstrap: ["bootstrap"],
+    fontAwesome: [
+      "@fortawesome/fontawesome-free/js/fontawesome",
+      "@fortawesome/fontawesome-free/js/solid",
+      "@fortawesome/fontawesome-free/js/regular",
+      "@fortawesome/fontawesome-free/js/brands"
+    ]
   },
 
   output: {
@@ -44,8 +55,9 @@ module.exports = {
             {
               loader: "css-loader",
               options: {
-                sourceMap: true,
-                importLoaders: 1
+                sourceMap: false,
+                importLoaders: 1,
+                minimize: true
               }
             },
             {
@@ -60,7 +72,18 @@ module.exports = {
       }
     ]
   },
-
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          chunks: "initial",
+          test: path.resolve(__dirname, "node_modules"),
+          name: "vendors",
+          enforce: true
+        }
+      }
+    }
+  },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
 
@@ -77,7 +100,8 @@ module.exports = {
 
     new ExtractTextPlugin({
       filename: "css/[name].[hash].css",
-      disable: !isProd
+      disable: !isProd,
+      allChunks: true
     }),
 
     new CopyWebpackPlugin([
@@ -85,5 +109,6 @@ module.exports = {
         from: helpers.root("client/public")
       }
     ])
+    // new BundleAnalyzerPlugin()
   ]
 };
