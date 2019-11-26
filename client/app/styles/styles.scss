@@ -2,12 +2,12 @@
 
 @import "vendor/normalize";
 
-// $border-radius: 0;
-// $border-radius-sm: 0;
-// $border-radius-lg: 0;
-// $font-size-base: 0.95rem;
-// $primary: #1976d2;
-// @import "~bootstrap/scss/bootstrap";
+$border-radius: 0;
+$border-radius-sm: 0;
+$border-radius-lg: 0;
+$font-size-base: 0.95rem;
+$primary: #1976d2;
+@import "~bootstrap/scss/bootstrap";
 
 .imgPreview {
   img {
