@@ -15,14 +15,7 @@ const pkg = require("../package.json");
 module.exports = {
   entry: {
     app: [helpers.root("client/app/index.js")],
-    react: ["react", "react-dom", "react-router-dom"],
-    bootstrap: ["bootstrap"],
-    fontAwesome: [
-      "@fortawesome/fontawesome-free/js/fontawesome",
-      "@fortawesome/fontawesome-free/js/solid",
-      "@fortawesome/fontawesome-free/js/regular",
-      "@fortawesome/fontawesome-free/js/brands"
-    ]
+    vendor: ["react", "react-dom", "react-router-dom"]
   },
 
   output: {
@@ -76,7 +69,7 @@ module.exports = {
     splitChunks: {
       cacheGroups: {
         vendor: {
-          chunks: "initial",
+          chunks: "all",
           test: path.resolve(__dirname, "node_modules"),
           name: "vendors",
           enforce: true

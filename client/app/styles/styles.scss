@@ -2,12 +2,12 @@
 
 @import "vendor/normalize";
 
-$border-radius: 0;
-$border-radius-sm: 0;
-$border-radius-lg: 0;
-$font-size-base: 0.95rem;
-$primary: #1976d2;
-@import "~bootstrap/scss/bootstrap";
+// $border-radius: 0;
+// $border-radius-sm: 0;
+// $border-radius-lg: 0;
+// $font-size-base: 0.95rem;
+// $primary: #1976d2;
+// @import "~bootstrap/scss/bootstrap";
 
 .imgPreview {
   img {
@@ -82,6 +82,7 @@ $primary: #1976d2;
     padding: 0 15px 0 0;
   }
 }
+/*
 .users-list-wrapper {
   .users-list {
     &.browser {
@@ -103,3 +104,4 @@ $primary: #1976d2;
     }
   }
 }
+*/
