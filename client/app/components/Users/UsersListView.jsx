@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const UsersListView = props => (
   <div className="users-list-wrapper">
-    <div className="users-list mobile">
+    <div className="users-list mobile d-md-none">
       {props.list.map((user, i) => {
         return (
           <div className="row" key={i}>
@@ -59,7 +59,7 @@ const UsersListView = props => (
         );
       })}
     </div>
-    <div className="users-list browser">
+    <div className="users-list browser d-none d-md-block">
       <table className="table">
         <thead>
           <tr>
