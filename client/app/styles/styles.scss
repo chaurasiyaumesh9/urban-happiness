@@ -8,7 +8,7 @@ $desktop: 768px - (2 * $gap);
 $widescreen: 992px - (2 * $gap);
 $fullhd: 1200px - (2 * $gap);
 $radius: 0;
-
+$table-head-background-color: hsl(0, 0%, 96%);
 @import "~bulma/bulma";
 body {
   font-family: "Roboto", sans-serif;
@@ -19,8 +19,10 @@ body {
 .text-center {
   text-align: center;
 }
+
 .table {
-  td {
+  td,
+  th {
     vertical-align: middle;
   }
 }
