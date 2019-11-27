@@ -5,9 +5,21 @@ import Home from "./components/Home/Home";
 import Categories from "./components/Categories/Categories";
 import UsersList from "./components/Users/UsersList";
 import UserForm from "./components/Users/UserForm";
+import Login from "./components/Login/Login";
 const Routes = ({ setNotification, setLoaderStatus }) => (
   <Switch>
     <Route exact path="/" component={Home} />
+    <Route
+      exact
+      path="/login"
+      render={props => (
+        <Login
+          {...props}
+          setNotification={setNotification}
+          setLoaderStatus={setLoaderStatus}
+        />
+      )}
+    />
     <Route
       exact
       path="/users"

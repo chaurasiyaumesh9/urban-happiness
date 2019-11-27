@@ -87,7 +87,18 @@ const Header = ({ toggleNavbar }) => (
               className="navbar-item"
               to="/"
             >
+              <svg className="uh-icon uh-icon-home">
+                <use xlinkHref="assets/img/sprite.svg#icon-home"></use>
+              </svg>
               HOME
+            </NavLink>
+            <NavLink
+              exact
+              activeClassName="active"
+              className="navbar-item"
+              to="/login"
+            >
+              LOGIN
             </NavLink>
             <NavLink
               exact

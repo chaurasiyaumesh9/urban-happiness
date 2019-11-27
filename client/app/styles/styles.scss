@@ -10,6 +10,8 @@ $fullhd: 1200px - (2 * $gap);
 $radius: 0;
 $table-head-background-color: hsl(0, 0%, 96%);
 @import "~bulma/bulma";
+// @import "~@fortawesome/fontawesome-free/scss/regular";
+
 body {
   font-family: "Roboto", sans-serif;
 }
@@ -18,6 +20,11 @@ body {
 }
 .text-center {
   text-align: center;
+}
+.uh-icon {
+  width: 18px;
+  height: 18px;
+  margin: 0 3px 3px 0;
 }
 
 .table {

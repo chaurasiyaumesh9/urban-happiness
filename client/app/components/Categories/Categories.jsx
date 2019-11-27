@@ -3,11 +3,10 @@ class Categories extends React.Component {
   render() {
     return (
       <div className="container">
-        <div className="jumbotron text-center">
-          <h3>
-            <i className="fas fa-users-cog"></i> MANAGE CATEGORIES
-          </h3>
-        </div>
+        <h4 className="title is-4 text-center mt-4 mb-4">
+          {" "}
+          MANAGE CATEGORIES{" "}
+        </h4>
       </div>
     );
   }

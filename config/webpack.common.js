@@ -39,7 +39,18 @@ module.exports = {
         include: helpers.root("client"),
         loader: "babel-loader"
       },
-
+      {
+        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        use: [
+          {
+            loader: "url-loader",
+            options: {
+              name: "[name].[hash:6].[ext]",
+              limit: 100000
+            }
+          }
+        ]
+      },
       // SCSS files
       {
         test: /\.(scss|css|sass)$/,
