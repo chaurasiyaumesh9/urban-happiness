@@ -623,7 +623,10 @@ class UserForm extends React.Component {
     }
     return (
       <div className="container mt-0">
-        <h4 className="title text-center mt-4 mb-4"> CREATE NEW USER </h4>
+        <h4 className="title is-4 text-center mt-4 mb-4">
+          {" "}
+          {this.state.editMode ? "UPDATE USER" : "CREATE NEW USER"}{" "}
+        </h4>
         <form onSubmit={this.onSubmit}>
           {/* <div className="panel panel-default">
             <FormErrors formErrors={this.state.errors} />

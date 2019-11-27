@@ -2,16 +2,27 @@
 
 @import "vendor/normalize";
 
-// $border-radius: 0;
-// $border-radius-sm: 0;
-// $border-radius-lg: 0;
-// $font-size-base: 0.95rem;
-// $primary: #1976d2;
-// @import "~bootstrap/scss/bootstrap";
+$gap: 15px;
+$tablet: 576px;
+$desktop: 768px - (2 * $gap);
+$widescreen: 992px - (2 * $gap);
+$fullhd: 1200px - (2 * $gap);
+$radius: 0;
 
 @import "~bulma/bulma";
 body {
   font-family: "Roboto", sans-serif;
+}
+.container {
+  padding: 0 15px;
+}
+.text-center {
+  text-align: center;
+}
+.table {
+  td {
+    vertical-align: middle;
+  }
 }
 .imgPreview {
   img {

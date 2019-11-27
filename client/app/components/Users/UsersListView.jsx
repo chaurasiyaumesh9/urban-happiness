@@ -49,7 +49,7 @@ const UsersListView = props => (
     </div>
     <div className="users-list browser is-hidden-mobile">
       <div className="table-container">
-        <table className="table is-fullwidth">
+        <table className="table is-fullwidth table is-striped">
           <thead>
             <tr>
               <th className="text-right" scope="col">
@@ -67,9 +67,9 @@ const UsersListView = props => (
               <th className="text-left" scope="col">
                 ROLE
               </th>
-              <th className="text-left" scope="col">
+              {/* <th className="text-left" scope="col">
                 PHOTO
-              </th>
+              </th> */}
               <th className="text-right" scope="col">
                 {" "}
                 ACTION(S){" "}
@@ -80,21 +80,21 @@ const UsersListView = props => (
             {props.list.map((user, i) => {
               return (
                 <tr key={i}>
-                  <th className="text-right" scope="row">
+                  <td className="text-right" scope="row">
                     {i + 1}
-                  </th>
+                  </td>
                   <td className="text-left">{user.accountHolderName}</td>
                   <td className="text-left">{user.contact}</td>
                   <td className="text-left">{user.email}</td>
                   <td className="text-left">{user.userType}</td>
-                  <td className="text-left">
+                  {/* <td className="text-left">
                     <div className="user-photo-preview">
                       <img
                         src={user.photo.secure_url || user.photo.url}
                         alt={user.accountHolderName}
                       />
                     </div>
-                  </td>
+                  </td> */}
                   <td className="text-right">
                     <div className="buttons">
                       <Link
