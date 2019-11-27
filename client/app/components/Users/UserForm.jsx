@@ -546,10 +546,10 @@ class UserForm extends React.Component {
       htmlIdProof = null;
     if (this.state.fields.addressProof.type != "") {
       htmlAddressProof = (
-        <div className="col-sm-8">
-          <div className="row">
-            <div className="col-sm-4">
-              <div className="form-group">
+        <div className="column is-two-thirds">
+          <div className="columns">
+            <div className="column is-one-third">
+              <div className="field">
                 <label className="col-form-label" htmlFor="file-addressproof">
                   {" "}
                   Photo copy of {this.state.fields.addressProof.type}
@@ -577,7 +577,7 @@ class UserForm extends React.Component {
                 </span>
               </div>
             </div>
-            <div className="col-sm-8">
+            <div className="column is-two-thirds">
               <div className="imgPreview">{$addressProofDocumentPreview}</div>
             </div>
           </div>
@@ -586,10 +586,10 @@ class UserForm extends React.Component {
     }
     if (this.state.fields.idProof.type != "") {
       htmlIdProof = (
-        <div className="col-sm-8">
-          <div className="row">
-            <div className="col-sm-4">
-              <div className="form-group">
+        <div className="column is-two-thirds">
+          <div className="columns">
+            <div className="column is-one-third">
+              <div className="field">
                 <label className="col-form-label" htmlFor="file-idproof">
                   {" "}
                   Photo copy of {this.state.fields.idProof.type}
@@ -614,7 +614,7 @@ class UserForm extends React.Component {
                 </span>
               </div>
             </div>
-            <div className="col-sm-8">
+            <div className="column is-two-thirds">
               <div className="imgPreview">{$idProofDocumentPreview}</div>
             </div>
           </div>
@@ -623,44 +623,43 @@ class UserForm extends React.Component {
     }
     return (
       <div className="container mt-0">
-        <h4 className="title text-center mt-4 mb-4">
-          {" "}
-          CREATE NEW USER ACCOUNT{" "}
-        </h4>
+        <h4 className="title text-center mt-4 mb-4"> CREATE NEW USER </h4>
         <form onSubmit={this.onSubmit}>
           {/* <div className="panel panel-default">
             <FormErrors formErrors={this.state.errors} />
           </div> */}
-          <div className="row">
-            <div className="col-sm-4">
-              <div className="form-group">
-                <label className="col-form-label" htmlFor="accountHolderName">
+          <div className="columns">
+            <div className="column is-one-third">
+              <div className="field">
+                <label className="label" htmlFor="accountHolderName">
                   {" "}
                   Name
                 </label>
-                <input
-                  className={`form-control ${this.errorClass(
-                    this.state.errors.accountHolderName
-                  )}`}
-                  type="text"
-                  name="accountHolderName"
-                  id="accountHolderName"
-                  value={this.state.fields.accountHolderName || ""}
-                  onChange={event => this.handleUserInput(event)}
-                />
+                <div className="control">
+                  <input
+                    className={`input ${this.errorClass(
+                      this.state.errors.accountHolderName
+                    )}`}
+                    type="text"
+                    name="accountHolderName"
+                    id="accountHolderName"
+                    value={this.state.fields.accountHolderName || ""}
+                    onChange={event => this.handleUserInput(event)}
+                  />
+                </div>
                 <span className="error">
                   {this.state.errors.accountHolderName}
                 </span>
               </div>
             </div>
-            <div className="col-sm-4">
-              <div className="form-group">
+            <div className="column is-one-third">
+              <div className="field">
                 <label className="col-form-label" htmlFor="email">
                   {" "}
                   Email{" "}
                 </label>
                 <input
-                  className={`form-control ${this.errorClass(
+                  className={`input ${this.errorClass(
                     this.state.errors.email
                   )}`}
                   type="text"
@@ -672,13 +671,13 @@ class UserForm extends React.Component {
                 <span className="error">{this.state.errors.email}</span>
               </div>
             </div>
-            <div className="col-sm-4">
-              <div className="form-group">
+            <div className="column is-one-third">
+              <div className="field">
                 <label className="col-form-label" htmlFor="contact">
                   Contact
                 </label>
                 <input
-                  className={`form-control ${this.errorClass(
+                  className={`input ${this.errorClass(
                     this.state.errors.contact
                   )}`}
                   type="text"
@@ -692,15 +691,15 @@ class UserForm extends React.Component {
               </div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-sm-4">
-              <div className="form-group">
+          <div className="columns">
+            <div className="column is-one-third">
+              <div className="field">
                 <label className="col-form-label" htmlFor="userType">
                   {" "}
                   User Role/Type{" "}
                 </label>
                 <select
-                  className={`form-control ${this.errorClass(
+                  className={`input ${this.errorClass(
                     this.state.errors.userType
                   )}`}
                   name="userType"
@@ -717,13 +716,13 @@ class UserForm extends React.Component {
                 <span className="error">{this.state.errors.userType}</span>
               </div>
             </div>
-            <div className="col-sm-4">
-              <div className="form-group">
+            <div className="column is-one-third">
+              <div className="field">
                 <label className="col-form-label" htmlFor="password">
                   Password
                 </label>
                 <input
-                  className={`form-control ${this.errorClass(
+                  className={`input ${this.errorClass(
                     this.state.errors.password
                   )}`}
                   type="password"
@@ -735,13 +734,13 @@ class UserForm extends React.Component {
                 <span className="error">{this.state.errors.password}</span>
               </div>
             </div>
-            <div className="col-sm-4">
-              <div className="form-group">
+            <div className="column is-one-third">
+              <div className="field">
                 <label className="col-form-label" htmlFor="confirmPassword">
                   Confirm Password
                 </label>
                 <input
-                  className={`form-control ${this.errorClass(
+                  className={`input ${this.errorClass(
                     this.state.errors.confirmPassword
                   )}`}
                   type="password"
@@ -756,9 +755,9 @@ class UserForm extends React.Component {
               </div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-sm-4">
-              <div className="form-group">
+          <div className="columns">
+            <div className="column is-one-third">
+              <div className="field">
                 <label
                   htmlFor="dropdown-addressType"
                   className="col-form-label"
@@ -767,7 +766,7 @@ class UserForm extends React.Component {
                   Proof of Residence{" "}
                 </label>
                 <select
-                  className={`form-control ${this.errorClass(
+                  className={`input ${this.errorClass(
                     this.state.errors.addressProof.type
                   )}`}
                   name="dropdown-addressType"
@@ -792,15 +791,15 @@ class UserForm extends React.Component {
             </div>
             {htmlAddressProof}
           </div>
-          <div className="row">
-            <div className="col-sm-4">
-              <div className="form-group">
+          <div className="columns">
+            <div className="column is-one-third">
+              <div className="field">
                 <label htmlFor="dropdown-idType" className="col-form-label">
                   {" "}
                   Proof of ID{" "}
                 </label>
                 <select
-                  className={`form-control ${this.errorClass(
+                  className={`input ${this.errorClass(
                     this.state.errors.idProof.type
                   )}`}
                   name="dropdown-idType"
@@ -824,9 +823,9 @@ class UserForm extends React.Component {
             </div>
             {htmlIdProof}
           </div>
-          <div className="row">
-            <div className="col-sm-4">
-              <div className="form-group">
+          <div className="columns">
+            <div className="column is-one-third">
+              <div className="field">
                 <label className="col-form-label"> Upload Photo</label>
                 <div className="input-group">
                   <div className="custom-file">
@@ -849,13 +848,13 @@ class UserForm extends React.Component {
                 <span className="error">{this.state.errors.photo}</span>
               </div>
             </div>
-            <div className="col-sm-8">
+            <div className="column is-two-thirds">
               <div className="imgPreview">{$photoPreview}</div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-sm-4">
-              <div className="form-group">
+          <div className="columns">
+            <div className="column is-one-third">
+              <div className="field">
                 <legend className="col-form-label mt-3"> Gender </legend>
                 <div className="form-check form-check-inline">
                   <input
@@ -889,15 +888,17 @@ class UserForm extends React.Component {
               </div>
             </div>
           </div>
-          <button className="btn btn-sm btn-primary mr-1" type="submit">
-            SUBMIT
-          </button>
-          <button
-            className="btn btn-sm btn-info"
-            onClick={() => this.props.history.push("/users")}
-          >
-            <i className="fas fa-chevron-left"></i>GO BACK
-          </button>
+          <div className="buttons">
+            <button className="button is-primary" type="submit">
+              SUBMIT
+            </button>
+            <button
+              className="button is-link is-light"
+              onClick={() => this.props.history.push("/users")}
+            >
+              <i className="fas fa-chevron-left"></i>GO BACK
+            </button>
+          </div>
         </form>
       </div>
     );

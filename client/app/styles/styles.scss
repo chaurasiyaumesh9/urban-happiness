@@ -10,6 +10,9 @@
 // @import "~bootstrap/scss/bootstrap";
 
 @import "~bulma/bulma";
+body {
+  font-family: "Roboto", sans-serif;
+}
 .imgPreview {
   img {
     max-width: 100%;

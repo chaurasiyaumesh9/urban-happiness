@@ -44,11 +44,20 @@ class Container extends Component {
       }
     });
   };
+  toggleNavbar = e => {
+    e.preventDefault();
+    const sourceElement = e.target;
+    const target = sourceElement.dataset.target;
+    const $target = document.getElementById(target);
+    //debugger;
+    if (sourceElement) sourceElement.classList.toggle("is-active");
+    if ($target) $target.classList.toggle("is-active");
+  };
 
   render() {
     return (
       <Fragment>
-        <Header />
+        <Header toggleNavbar={e => this.toggleNavbar(e)} />
         {this.state.notification.show && (
           <Notifications
             notification={this.state.notification}
