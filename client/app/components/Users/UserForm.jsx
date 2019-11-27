@@ -829,25 +829,33 @@ class UserForm extends React.Component {
           <div className="columns">
             <div className="column is-one-third">
               <div className="field">
-                <label className="col-form-label"> Upload Photo</label>
-                <div className="input-group">
-                  <div className="custom-file">
+                <div className="file has-name is-boxed">
+                  <label className="file-label">
                     <input
                       type="file"
-                      className={`custom-file-input ${this.errorClass(
+                      className={`file-input ${this.errorClass(
                         this.state.errors.photo
                       )}`}
                       id="file-user-photo"
                       onChange={e => this.handlePhotoChange(e)}
                     />
-                    <label
-                      className="custom-file-label"
-                      htmlFor="file-user-photo"
-                    >
-                      Choose file
-                    </label>
-                  </div>
+                    <span className="file-cta">
+                      <span className="file-icon">
+                        <svg className="uh-icon uh-icon-upload">
+                          <use xlinkHref="assets/img/sprite.svg#icon-upload"></use>
+                        </svg>
+                      </span>
+                      <span className="file-label">Upload Photo…</span>
+                    </span>
+                    <span className="file-name">
+                      {
+                        this.state.fields.addressProof.document
+                          .original_filename
+                      }
+                    </span>
+                  </label>
                 </div>
+
                 <span className="error">{this.state.errors.photo}</span>
               </div>
             </div>
