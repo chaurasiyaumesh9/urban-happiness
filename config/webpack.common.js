@@ -7,6 +7,7 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
 const path = require("path");
 const helpers = require("./helpers");
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 
 const NODE_ENV = process.env.NODE_ENV;
 const isProd = NODE_ENV === "production";
@@ -65,8 +66,28 @@ module.exports = {
       }
     ]
   },
+  performance: {
+    hints: "warning",
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000
+  },
   optimization: {
+    minimize: true,
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        uglifyOptions: {
+          compress: false,
+          ecma: 6,
+          mangle: true
+        },
+        sourceMap: true
+      })
+    ],
     splitChunks: {
+      minSize: 10000,
+      maxSize: 250000,
       cacheGroups: {
         vendor: {
           chunks: "all",
