@@ -82,33 +82,6 @@ module.exports = {
     maxEntrypointSize: 512000,
     maxAssetSize: 512000
   },
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new UglifyJsPlugin({
-        cache: true,
-        parallel: true,
-        uglifyOptions: {
-          compress: false,
-          ecma: 6,
-          mangle: true
-        },
-        sourceMap: true
-      })
-    ],
-    splitChunks: {
-      minSize: 10000,
-      maxSize: 250000,
-      cacheGroups: {
-        vendor: {
-          chunks: "all",
-          test: path.resolve(__dirname, "node_modules"),
-          name: "vendors",
-          enforce: true
-        }
-      }
-    }
-  },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
 

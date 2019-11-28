@@ -13,6 +13,33 @@ module.exports = merge(commonConfig, {
   output: {
     filename: "js/[name].[hash].js",
     chunkFilename: "[id].[hash].chunk.js"
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        uglifyOptions: {
+          compress: false,
+          ecma: 6,
+          mangle: true
+        },
+        sourceMap: true
+      })
+    ],
+    splitChunks: {
+      minSize: 10000,
+      maxSize: 250000,
+      cacheGroups: {
+        vendor: {
+          chunks: "all",
+          test: path.resolve(__dirname, "node_modules"),
+          name: "vendors",
+          enforce: true
+        }
+      }
+    }
   }
   /*optimization: {
     minimizer: [

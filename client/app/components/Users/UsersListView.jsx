@@ -112,16 +112,24 @@ const UsersListView = props => (
                   <td className="text-right">
                     <div className="buttons">
                       <Link
-                        className="button is-link is-light is-normal"
+                        className="button is-link is-light is-normal edit-user"
                         to={`/users/${user._id}`}
                       >
-                        <i className="fas fa-user-edit"></i> EDIT
+                        <span className="uh-icon icon-pencil">
+                          <svg className="uh-icon-pencil">
+                            <use xlinkHref="assets/img/sprite.svg#icon-pencil"></use>
+                          </svg>
+                        </span>
                       </Link>
                       <button
                         onClick={i => this.deleteUser(user._id)}
                         className="button is-danger is-light is-normal delete-user"
                       >
-                        <i className="fas fa-trash"></i> DELETE
+                        <span className="uh-icon icon-bin2">
+                          <svg className="uh-icon-bin2">
+                            <use xlinkHref="assets/img/sprite.svg#icon-bin2"></use>
+                          </svg>
+                        </span>
                       </button>
                     </div>
                   </td>

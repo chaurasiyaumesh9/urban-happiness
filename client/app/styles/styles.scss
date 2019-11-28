@@ -40,6 +40,16 @@ body {
     margin: 0 0 3px 0;
   }
 }
+.edit-user {
+  svg {
+    fill: #2160c4;
+  }
+}
+.delete-user {
+  svg {
+    fill: #f00;
+  }
+}
 .card {
   .card-content {
     .panel {
