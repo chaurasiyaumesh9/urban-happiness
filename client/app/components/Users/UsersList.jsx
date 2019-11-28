@@ -52,9 +52,12 @@ class UsersList extends React.Component {
       <div className="container">
         <h4 className="title is-4 text-center mt-4 mb-4"> MANAGE USERS </h4>
         <UsersListView list={this.state.users} />
-        <Link className="button is-primary" to="/users/create">
-          <i className="fas fa-plus"></i> New User
-        </Link>
+        <div className="buttons">
+          <Link className="button is-primary" to="/users/create">
+            <i className="fas fa-plus"></i> New User
+          </Link>
+        </div>
+
         <hr />
       </div>
     );

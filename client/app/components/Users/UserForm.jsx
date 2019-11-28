@@ -213,6 +213,19 @@ class UserForm extends React.Component {
           show: true
         });
         this.props.setLoaderStatus(false);
+        this.setState({
+          fields: {
+            accountHolderName: json.accountHolderName,
+            email: json.email,
+            addressProof: json.addressProof,
+            idProof: json.idProof,
+            password: json.password,
+            contact: json.contact,
+            photo: json.photo,
+            userType: json.userType,
+            gender: json.gender
+          }
+        });
       })
       .catch(e => console.log(e));
   };
@@ -312,9 +325,7 @@ class UserForm extends React.Component {
       fields: {
         ...prevState.fields,
         addressProof: {
-          document: {
-            ...prevState.fields.addressProof.document
-          },
+          document: {},
           type: updatedType
         }
       },
@@ -329,9 +340,7 @@ class UserForm extends React.Component {
       fields: {
         ...prevState.fields,
         idProof: {
-          document: {
-            ...prevState.fields.idProof.document
-          },
+          document: {},
           type: updatedType
         }
       },
@@ -548,36 +557,58 @@ class UserForm extends React.Component {
       htmlAddressProof = (
         <div className="column is-two-thirds">
           <div className="columns">
-            <div className="column is-one-third">
+            <div className="column is-half">
               <div className="field">
-                <label className="col-form-label" htmlFor="file-addressproof">
-                  {" "}
-                  Photo copy of {this.state.fields.addressProof.type}
-                </label>
-                <div className="input-group">
-                  <div className="custom-file">
+                <div className="file has-name is-boxed">
+                  <label className="file-label" htmlFor="file-addressproof">
                     <input
                       type="file"
-                      className={`custom-file-input ${this.errorClass(
+                      className={`file-input ${this.errorClass(
                         this.state.errors.addressProof.document
                       )}`}
                       id="file-addressproof"
                       onChange={e => this.handleAddressProofImageChange(e)}
                     />
-                    <label
-                      className="custom-file-label"
-                      htmlFor="file-addressproof"
-                    >
-                      Choose file
-                    </label>
-                  </div>
+                    <span className="file-cta">
+                      <span className="uh-icon file-icon">
+                        <svg className="uh-icon-upload">
+                          <use xlinkHref="assets/img/sprite.svg#icon-upload"></use>
+                        </svg>
+                      </span>
+
+                      <span className="file-label">
+                        {" "}
+                        Upload photo copy of{" "}
+                        {this.state.fields.addressProof.type}
+                      </span>
+                    </span>
+                    {this.state.fields.addressProof.document.hasOwnProperty(
+                      "file"
+                    ) ? (
+                      <span className="file-name">
+                        {this.state.fields.addressProof.document.file.name}
+                      </span>
+                    ) : this.state.fields.addressProof.document.hasOwnProperty(
+                        "original_filename"
+                      ) ? (
+                      <span className="file-name">
+                        {
+                          this.state.fields.addressProof.document
+                            .original_filename
+                        }
+                      </span>
+                    ) : (
+                      <span></span>
+                    )}
+                  </label>
                 </div>
+
                 <span className="error">
                   {this.state.errors.addressProof.document}
                 </span>
               </div>
             </div>
-            <div className="column is-two-thirds">
+            <div className="column is-half">
               <div className="imgPreview">{$addressProofDocumentPreview}</div>
             </div>
           </div>
@@ -588,33 +619,53 @@ class UserForm extends React.Component {
       htmlIdProof = (
         <div className="column is-two-thirds">
           <div className="columns">
-            <div className="column is-one-third">
+            <div className="column is-half">
               <div className="field">
-                <label className="col-form-label" htmlFor="file-idproof">
-                  {" "}
-                  Photo copy of {this.state.fields.idProof.type}
-                </label>
-                <div className="input-group">
-                  <div className="custom-file">
+                <div className="file has-name is-boxed">
+                  <label className="file-label" htmlFor="file-idproof">
                     <input
                       type="file"
-                      className={`custom-file-input ${this.errorClass(
+                      className={`file-input ${this.errorClass(
                         this.state.errors.idProof.document
                       )}`}
                       id="file-idproof"
                       onChange={e => this.handleIdProofImageChange(e)}
                     />
-                    <label className="custom-file-label" htmlFor="file-idproof">
-                      Choose file
-                    </label>
-                  </div>
+                    <span className="file-cta">
+                      <span className="uh-icon file-icon">
+                        <svg className="uh-icon-upload">
+                          <use xlinkHref="assets/img/sprite.svg#icon-upload"></use>
+                        </svg>
+                      </span>
+                      <span className="file-label">
+                        {" "}
+                        Upload photo copy of {this.state.fields.idProof.type}
+                      </span>
+                    </span>
+                    {this.state.fields.idProof.document.hasOwnProperty(
+                      "file"
+                    ) ? (
+                      <span className="file-name">
+                        {this.state.fields.idProof.document.file.name}
+                      </span>
+                    ) : this.state.fields.idProof.document.hasOwnProperty(
+                        "original_filename"
+                      ) ? (
+                      <span className="file-name">
+                        {this.state.fields.idProof.document.original_filename}
+                      </span>
+                    ) : (
+                      <span></span>
+                    )}
+                  </label>
                 </div>
+
                 <span className="error">
                   {this.state.errors.idProof.document}
                 </span>
               </div>
             </div>
-            <div className="column is-two-thirds">
+            <div className="column is-half">
               <div className="imgPreview">{$idProofDocumentPreview}</div>
             </div>
           </div>
@@ -840,22 +891,28 @@ class UserForm extends React.Component {
                       onChange={e => this.handlePhotoChange(e)}
                     />
                     <span className="file-cta">
-                      <span className="file-icon">
-                        <svg className="uh-icon uh-icon-upload">
+                      <span className="uh-icon file-icon">
+                        <svg className="uh-icon-upload">
                           <use xlinkHref="assets/img/sprite.svg#icon-upload"></use>
                         </svg>
                       </span>
                       <span className="file-label">Upload Photo…</span>
                     </span>
-                    <span className="file-name">
-                      {
-                        this.state.fields.addressProof.document
-                          .original_filename
-                      }
-                    </span>
+                    {this.state.fields.photo.hasOwnProperty("file") ? (
+                      <span className="file-name">
+                        {this.state.fields.photo.file.name}
+                      </span>
+                    ) : this.state.fields.photo.hasOwnProperty(
+                        "original_filename"
+                      ) ? (
+                      <span className="file-name">
+                        {this.state.fields.photo.original_filename}
+                      </span>
+                    ) : (
+                      <span></span>
+                    )}
                   </label>
                 </div>
-
                 <span className="error">{this.state.errors.photo}</span>
               </div>
             </div>

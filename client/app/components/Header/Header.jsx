@@ -87,9 +87,11 @@ const Header = ({ toggleNavbar }) => (
               className="navbar-item"
               to="/"
             >
-              <svg className="uh-icon uh-icon-home">
-                <use xlinkHref="assets/img/sprite.svg#icon-home"></use>
-              </svg>
+              <span className="uh-icon phone-icon">
+                <svg className="uh-icon-home">
+                  <use xlinkHref="assets/img/sprite.svg#icon-home"></use>
+                </svg>
+              </span>
               HOME
             </NavLink>
             <NavLink

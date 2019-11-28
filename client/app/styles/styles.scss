@@ -21,10 +21,38 @@ body {
 .text-center {
   text-align: center;
 }
+
+.file-name {
+  max-width: 100%;
+}
+.buttons {
+  padding: 5px 0;
+}
+
 .uh-icon {
-  width: 18px;
-  height: 18px;
-  margin: 0 3px 3px 0;
+  // display: inline-block;
+  // padding: 10px;
+  line-height: 0;
+  svg {
+    width: 1.5em;
+    height: 1.5em;
+    display: inline-block;
+    margin: 0 0 3px 0;
+  }
+}
+.card {
+  .card-content {
+    .panel {
+      display: flex;
+      align-items: center;
+      box-shadow: none;
+      margin: 0;
+
+      .subtitle {
+        padding: 10px;
+      }
+    }
+  }
 }
 
 .table {

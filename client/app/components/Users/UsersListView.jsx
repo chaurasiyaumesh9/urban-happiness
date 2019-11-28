@@ -21,8 +21,22 @@ const UsersListView = props => (
               </figure>
             </div>
             <div className="card-content">
-              <p className="title">{user.contact}</p>
-              <p className="subtitle">{user.email}</p>
+              <h4 className="panel">
+                <span className="uh-icon phone-icon">
+                  <svg className="uh-icon-phone">
+                    <use xlinkHref="assets/img/sprite.svg#icon-phone"></use>
+                  </svg>
+                </span>
+                <span className="subtitle is-6">{user.contact}</span>
+              </h4>
+              <h6 className="panel">
+                <span className="uh-icon icon-envelop">
+                  <svg className="uh-icon-envelop">
+                    <use xlinkHref="assets/img/sprite.svg#icon-envelop"></use>
+                  </svg>
+                </span>
+                <span className="subtitle is-6">{user.email}</span>
+              </h6>
             </div>
             <footer className="card-footer">
               <p className="card-footer-item">
