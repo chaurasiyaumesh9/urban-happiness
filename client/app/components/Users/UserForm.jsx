@@ -236,12 +236,20 @@ class UserForm extends React.Component {
     })
       .then(res => res.json())
       .then(json => {
-        this.resetState();
-        this.props.setNotification({
-          type: "success",
-          message: "User Created Successfully!!",
-          show: true
-        });
+        if (json.success) {
+          this.resetState();
+          this.props.setNotification({
+            type: "success",
+            message: "User Created Successfully!!",
+            show: true
+          });
+        } else {
+          this.props.setNotification({
+            type: "warning",
+            message: json.message,
+            show: true
+          });
+        }
         this.props.setLoaderStatus(false);
       })
       .catch(e => console.log(e));

@@ -3,7 +3,7 @@ import React from "react";
 const Notifications = ({ closeHandler, notification }) => (
   <div className="container">
     <div
-      className={`notification is-primary alert-${notification.type} alert-dismissible fade show`}
+      className={`notification is-${notification.type} alert-dismissible fade show`}
       role="alert"
     >
       <strong>{notification.message}</strong>

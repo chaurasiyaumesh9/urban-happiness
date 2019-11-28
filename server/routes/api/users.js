@@ -20,42 +20,102 @@ module.exports = app => {
     if (!req.body || !req.files) {
       return;
     }
+    const { body, files } = req;
+    let {
+      accountHolderName,
+      email,
+      contact,
+      password,
+      userType,
+      gender,
+      addressProofType,
+      idProofType
+    } = body;
+
+    let { addressProof, idProof, photo } = files;
     let userRawData = {
-      accountHolderName: req.body.accountHolderName,
-      email: req.body.email,
-      contact: req.body.contact,
-      password: req.body.password,
-      userType: req.body.userType,
-      gender: req.body.gender,
+      accountHolderName: accountHolderName,
+      email: email,
+      contact: contact,
+      userType: userType,
+      gender: gender,
       addressProof: {
-        type: req.body.addressProofType,
+        type: addressProofType,
         document: {}
       },
       idProof: {
-        type: req.body.idProofType,
+        type: idProofType,
         document: {}
       },
       photo: {}
     };
-    let promiseAddressProof = cloudinary.uploader.upload(
-      req.files["addressProof"]["path"]
-    );
-    let promiseIdProof = cloudinary.uploader.upload(
-      req.files["idProof"]["path"]
-    );
-    let promisePhoto = cloudinary.uploader.upload(req.files["photo"]["path"]);
 
-    Promise.all([promiseAddressProof, promiseIdProof, promisePhoto])
-      .then(results => {
-        userRawData.addressProof.document = results[0];
-        userRawData.idProof.document = results[1];
-        userRawData.photo = results[2];
-        let NewUser = new User(userRawData);
-        NewUser.save()
+    if (!email) {
+      return res.send({
+        success: false,
+        message: "Error: Email cannot be blank."
+      });
+    }
+    if (!password) {
+      return res.send({
+        success: false,
+        message: "Error: Password cannot be blank."
+      });
+    }
+    email = email.toLowerCase();
+    email = email.trim();
+    User.find(
+      {
+        email: email
+      },
+      (err, previousUsers) => {
+        if (err) {
+          return res.send({
+            success: false,
+            message: "Error: Server error"
+          });
+        } else if (previousUsers.length > 0) {
+          return res.send({
+            success: false,
+            users: previousUsers,
+            message: "Error: Account with this email already exist."
+          });
+        }
+
+        //SAVE USER OTHERWISE
+        let promiseAddressProof = cloudinary.uploader.upload(
+          addressProof["path"]
+        );
+        let promiseIdProof = cloudinary.uploader.upload(idProof["path"]);
+        let promisePhoto = cloudinary.uploader.upload(photo["path"]);
+
+        Promise.all([promiseAddressProof, promiseIdProof, promisePhoto])
+          .then(results => {
+            userRawData.addressProof.document = results[0];
+            userRawData.idProof.document = results[1];
+            userRawData.photo = results[2];
+            let NewUser = new User(userRawData);
+            NewUser.password = NewUser.generateHash(password);
+            /*NewUser.save()
           .then(user => res.json(user))
-          .catch(err => next(err));
-      })
-      .catch(err => res.status(400).json(err));
+          .catch(err => next(err));*/
+            NewUser.save((err, user) => {
+              if (err) {
+                return res.send({
+                  success: false,
+                  message: "Error: Server error"
+                });
+              }
+              return res.send({
+                success: true,
+                user: user,
+                message: "Signed up"
+              });
+            });
+          })
+          .catch(err => res.status(400).json(err));
+      }
+    );
   });
   app.put("/api/users/:id", (req, res, next) => {
     if (!req.body) {
