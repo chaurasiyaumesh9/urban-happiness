@@ -59,7 +59,7 @@ const Header = () => (
 );
 */
 
-const Header = ({ toggleNavbar }) => (
+const Header = ({ toggleNavbar, logout }) => (
   <header>
     <div className="container">
       <nav className="navbar" role="navigation" aria-label="main navigation">
@@ -92,15 +92,23 @@ const Header = ({ toggleNavbar }) => (
                   <use xlinkHref="assets/img/sprite.svg#icon-home"></use>
                 </svg>
               </span>
-              HOME
             </NavLink>
+            {/* <NavLink
+              exact
+              activeClassName="active"
+              className="navbar-item"
+              to="/account/signin"
+            >
+              LOGIN
+            </NavLink> */}
             <NavLink
               exact
               activeClassName="active"
               className="navbar-item"
-              to="/login"
+              to="/account/logout"
+              onClick={e => logout(e)}
             >
-              LOGIN
+              LOGOUT
             </NavLink>
             <NavLink
               exact

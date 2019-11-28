@@ -16,7 +16,7 @@ module.exports = app => {
       .catch(err => next(err));
   });
 
-  app.post("/api/users", function(req, res, next) {
+  app.post("/api/users", (req, res, next) => {
     if (!req.body || !req.files) {
       return;
     }
@@ -121,18 +121,29 @@ module.exports = app => {
     if (!req.body) {
       return;
     }
+    const { body } = req;
+    let {
+      accountHolderName,
+      email,
+      contact,
+      password,
+      userType,
+      gender,
+      addressProofType,
+      idProofType
+    } = body;
     let userRawData = {
-      accountHolderName: req.body.accountHolderName,
-      email: req.body.email,
-      contact: req.body.contact,
-      password: req.body.password,
-      userType: req.body.userType,
-      gender: req.body.gender,
+      accountHolderName: accountHolderName,
+      email: email,
+      contact: contact,
+      password: password,
+      userType: userType,
+      gender: gender,
       addressProof: {
-        type: req.body.addressProofType
+        type: addressProofType
       },
       idProof: {
-        type: req.body.idProofType
+        type: idProofType
       },
       photo: {}
     };
@@ -190,6 +201,8 @@ module.exports = app => {
           })
           .finally(() => {
             //console.log("finally userRawData", userRawData);
+            let OldUser = new User(userRawData);
+            userRawData.password = OldUser.generateHash(password);
             User.findOneAndUpdate(
               { _id: req.params.id },
               { $set: userRawData },
@@ -202,7 +215,7 @@ module.exports = app => {
       });
   });
 
-  app.delete("/api/users/:id", function(req, res, next) {
+  app.delete("/api/users/:id", (req, res, next) => {
     User.findById(req.params.id)
       .exec()
       .then(user => {

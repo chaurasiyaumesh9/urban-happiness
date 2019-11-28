@@ -41,10 +41,14 @@ const UsersListView = props => (
             <footer className="card-footer">
               <p className="card-footer-item">
                 <Link
-                  className="button is-link is-light is-normal edit-user mr-1"
+                  className="button is-link is-light is-normal edit-user"
                   to={`/users/${user._id}`}
                 >
-                  <i className="fas fa-user-edit"></i> EDIT
+                  <span className="uh-icon icon-pencil">
+                    <svg className="uh-icon-pencil">
+                      <use xlinkHref="assets/img/sprite.svg#icon-pencil"></use>
+                    </svg>
+                  </span>
                 </Link>
               </p>
               <p className="card-footer-item">
@@ -52,7 +56,11 @@ const UsersListView = props => (
                   onClick={i => this.deleteUser(user._id)}
                   className="button is-danger is-light is-normal delete-user"
                 >
-                  <i className="fas fa-trash"></i> DELETE
+                  <span className="uh-icon icon-bin2">
+                    <svg className="uh-icon-bin2">
+                      <use xlinkHref="assets/img/sprite.svg#icon-bin2"></use>
+                    </svg>
+                  </span>
                 </button>
               </p>
             </footer>

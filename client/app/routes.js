@@ -11,7 +11,7 @@ const Routes = ({ setNotification, setLoaderStatus }) => (
     <Route exact path="/" component={Home} />
     <Route
       exact
-      path="/login"
+      path="/account/signin"
       render={props => (
         <Login
           {...props}

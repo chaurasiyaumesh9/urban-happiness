@@ -17,9 +17,23 @@ body {
 }
 .container {
   padding: 0 15px;
+
+  &.login {
+    margin: 50px auto;
+
+    .box {
+      max-width: 440px;
+      margin: 45px auto;
+    }
+  }
 }
 .text-center {
   text-align: center;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
 }
 
 .file-name {
@@ -27,6 +41,18 @@ body {
 }
 .buttons {
   padding: 5px 0;
+}
+
+.button {
+  &.login {
+    .title {
+      color: #fff;
+      padding: 0 10px;
+    }
+    svg {
+      fill: #fff;
+    }
+  }
 }
 
 .uh-icon {
@@ -37,7 +63,7 @@ body {
     width: 1.5em;
     height: 1.5em;
     display: inline-block;
-    margin: 0 0 3px 0;
+    // margin: 0 0 3px 0;
   }
 }
 .edit-user {

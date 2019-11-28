@@ -126,5 +126,13 @@
 <title>bin2</title>
 <path d="M6 32h20l2-22h-24zM20 4v-4h-8v4h-10v6l2-2h24l2 2v-6h-10zM18 4h-4v-2h4v2z"></path>
 </symbol>
+<symbol id="icon-enter" viewBox="0 0 32 32">
+<title>enter</title>
+<path d="M12 16h-10v-4h10v-4l6 6-6 6zM32 0v26l-12 6v-6h-12v-8h2v6h10v-18l8-4h-18v8h-2v-10z"></path>
+</symbol>
+<symbol id="icon-user" viewBox="0 0 32 32">
+<title>user</title>
+<path d="M18 22.082v-1.649c2.203-1.241 4-4.337 4-7.432 0-4.971 0-9-6-9s-6 4.029-6 9c0 3.096 1.797 6.191 4 7.432v1.649c-6.784 0.555-12 3.888-12 7.918h28c0-4.030-5.216-7.364-12-7.918z"></path>
+</symbol>
 </defs>
 </svg>
