@@ -78,20 +78,57 @@ const UsersListView = props => (
                 #
               </th>
               <th className="text-left" scope="col">
-                USER NAME
+                <a
+                  onClick={e => {
+                    props.sortMethod(e, "signUpDate");
+                  }}
+                  href=""
+                  className="column-sort username"
+                >
+                  USER NAME
+                </a>
               </th>
               <th className="text-left" scope="col">
-                CONTACT
+                <a
+                  onClick={e => {
+                    props.sortMethod(e, "contact");
+                  }}
+                  href=""
+                  className="column-sort user-contact"
+                >
+                  CONTACT
+                </a>
               </th>
               <th className="text-left" scope="col">
                 EMAIL
               </th>
               <th className="text-left" scope="col">
-                ROLE
+                <a
+                  onClick={e => {
+                    props.sortMethod(e, "userType");
+                  }}
+                  href=""
+                  className="column-sort user-role"
+                >
+                  ROLE
+                </a>
               </th>
               {/* <th className="text-left" scope="col">
                 PHOTO
               </th> */}
+
+              <th>
+                {" "}
+                <a
+                  onClick={e => {
+                    props.sortMethod(e, "signUpDate");
+                  }}
+                  href=""
+                  className="column-sort creation-date"
+                >
+                  CREATION DATE
+                </a>
+              </th>
               <th className="text-right" scope="col">
                 {" "}
                 ACTION(S){" "}
@@ -108,7 +145,7 @@ const UsersListView = props => (
                   <td className="text-left">{user.accountHolderName}</td>
                   <td className="text-left">{user.contact}</td>
                   <td className="text-left">{user.email}</td>
-                  <td className="text-left">{user.userType}</td>
+                  <td className="text-left uppercase">{user.userType}</td>
                   {/* <td className="text-left">
                     <div className="user-photo-preview">
                       <img
@@ -117,6 +154,7 @@ const UsersListView = props => (
                       />
                     </div>
                   </td> */}
+                  <td>{user.signUpDate}</td>
                   <td className="text-right">
                     <div className="buttons">
                       <Link

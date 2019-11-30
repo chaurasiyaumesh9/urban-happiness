@@ -201,7 +201,7 @@ module.exports = app => {
           })
           .finally(() => {
             //console.log("finally userRawData", userRawData);
-            let OldUser = new User(userRawData);
+            let OldUser = new User();
             userRawData.password = OldUser.generateHash(password);
             User.findOneAndUpdate(
               { _id: req.params.id },
