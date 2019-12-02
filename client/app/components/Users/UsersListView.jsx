@@ -80,7 +80,7 @@ const UsersListView = props => (
               <th className="text-left" scope="col">
                 <a
                   onClick={e => {
-                    props.sortMethod(e, "signUpDate");
+                    props.sortMethod(e, "accountHolderName");
                   }}
                   href=""
                   className="column-sort username"
